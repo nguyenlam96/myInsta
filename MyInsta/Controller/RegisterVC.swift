@@ -33,7 +33,7 @@ class RegisterVC: UIViewController {
         textField.placeholder = "Email"
         textField.borderStyle = .roundedRect
         textField.backgroundColor = UIColor(white: 0, alpha: 0.03)
-        textField.font = UIFont.systemFont(ofSize: 16)
+        textField.font = UIFont.systemFont(ofSize: 14)
         textField.keyboardType = UIKeyboardType.emailAddress
         textField.addTarget(self, action: #selector(handleTextInputField), for: .editingChanged)
         
@@ -46,7 +46,7 @@ class RegisterVC: UIViewController {
         textField.placeholder = "Username"
         textField.borderStyle = .roundedRect
         textField.backgroundColor = UIColor(white: 0, alpha: 0.03)
-        textField.font = UIFont.systemFont(ofSize: 16)
+        textField.font = UIFont.systemFont(ofSize: 14)
         textField.keyboardType = UIKeyboardType.alphabet
         textField.addTarget(self, action: #selector(handleTextInputField), for: .editingChanged)
         
@@ -59,7 +59,7 @@ class RegisterVC: UIViewController {
         textField.placeholder = "Password"
         textField.borderStyle = .roundedRect
         textField.backgroundColor = UIColor(white: 0, alpha: 0.03)
-        textField.font = UIFont.systemFont(ofSize: 16)
+        textField.font = UIFont.systemFont(ofSize: 14)
         textField.isSecureTextEntry = true
         textField.keyboardType = UIKeyboardType.alphabet
         textField.addTarget(self, action: #selector(handleTextInputField), for: .editingChanged)
@@ -79,7 +79,7 @@ class RegisterVC: UIViewController {
             button.setTitle("Sign Up", for: UIControl.State.normal)
             button.backgroundColor = UIColor.rgb(r: 149, g: 204, b: 244)
             button.layer.cornerRadius = 5
-            button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+            button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
             button.setTitleColor(UIColor.white, for: .normal)
             button.isEnabled = false
             button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)

@@ -161,11 +161,25 @@ class UserProfileHeader: UICollectionViewCell {
     
     private func setupBottomToolBar() {
         
+        let topDividerView = UIView()
+            topDividerView.backgroundColor = UIColor.lightGray
+        
+        let bottomDividerView = UIView()
+            bottomDividerView.backgroundColor = UIColor.lightGray
+        
         let stackView = UIStackView(arrangedSubviews: [self.gridButton, self.listButton, self.bookmarkButton])
+        
         self.addSubview(stackView)
+        self.addSubview(topDividerView)
+        self.addSubview(bottomDividerView)
+        
         stackView.anchor(top: nil, paddingTop: nil, left: self.leftAnchor, paddingLeft: 0, right: self.rightAnchor, paddingRight: 0, bottom: self.bottomAnchor, paddingBottom: 0, width: nil, height: 50)
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
+        
+        topDividerView.anchor(top: stackView.topAnchor, paddingTop: 0, left: self.leftAnchor, paddingLeft: 0, right: self.rightAnchor, paddingRight: 0, bottom: nil, paddingBottom: nil, width: nil, height: 0.5)
+        
+        bottomDividerView.anchor(top: stackView.bottomAnchor, paddingTop: 0, left: self.leftAnchor, paddingLeft: 0, right: self.rightAnchor, paddingRight: 0, bottom: nil, paddingBottom: nil, width: nil, height: 0.5)
         
     }
     
@@ -173,8 +187,8 @@ class UserProfileHeader: UICollectionViewCell {
         
         self.addSubview(editProfileButton)
 //        editProfileButton.anchor(top: postLabel.bottomAnchor, paddingTop: 8, left: postLabel.leftAnchor, paddingLeft: 0, right: followingLabel.rightAnchor, paddingRight: 0, bottom: nil, paddingBottom: 0, width: 0, height: 34)
-        self.editProfileButton.frame = CGRect(x: postLabel.frame.origin.x, y: postLabel.layer.frame.origin.y + 40, width: 0, height: 0)
-        self.editProfileButton.anchor(top: postLabel.bottomAnchor, paddingTop: 8, left: postLabel.leftAnchor, paddingLeft: 10, right: followingLabel.rightAnchor, paddingRight: 0, bottom: nil, paddingBottom: nil, width: nil, height: nil)
+        self.editProfileButton.frame = CGRect(x: postLabel.frame.origin.x, y: 0, width: 0, height: 34)
+        self.editProfileButton.anchor(top: postLabel.bottomAnchor, paddingTop: 0, left: postLabel.leftAnchor, paddingLeft: 10, right: followingLabel.rightAnchor, paddingRight: 0, bottom: nil, paddingBottom: nil, width: nil, height: nil)
     }
     
     // MARK: - Private Funcs :
