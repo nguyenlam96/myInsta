@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 
-class ViewController: UIViewController {
+class RegisterVC: UIViewController {
     
     
     // MARK: - View Create :
@@ -188,7 +188,7 @@ class ViewController: UIViewController {
     
 }
 // MARK: - ImagePickerCOntrollerDelegate :
-extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension RegisterVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
