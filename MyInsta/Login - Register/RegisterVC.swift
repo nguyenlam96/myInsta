@@ -13,7 +13,7 @@ import Firebase
 class RegisterVC: UIViewController {
     
     
-    // MARK: - View Create :
+    // MARK: - Create UI Elements :
     let plusPhotoButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.system)
         button.setImage(UIImage(named: "plus_photo")?.withRenderingMode(.alwaysOriginal), for: .normal)
@@ -23,8 +23,8 @@ class RegisterVC: UIViewController {
     
     @objc func handlePlusPhoto() {
         let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.allowsEditing = true
+            imagePickerController.delegate = self
+            imagePickerController.allowsEditing = true
         present(imagePickerController, animated: true)
     }
     
@@ -87,20 +87,75 @@ class RegisterVC: UIViewController {
         return button
     }()
     
+    
+    let backtoLoginButton: UIButton = {
+        let attributedText = NSMutableAttributedString(string: "Already have an account?",
+                                                       attributes: [.foregroundColor : UIColor.gray,
+                                                                    .font : UIFont.systemFont(ofSize: 13)])
+        attributedText.append(NSAttributedString(string: " Sign In", attributes: [NSAttributedString.Key.foregroundColor : UIColor.rgb(r: 17, g: 154, b: 237),
+                                                                                  .font : UIFont.systemFont(ofSize: 14, weight: .bold)]))
+        
+        let button = UIButton(type: .system)
+        button.setAttributedTitle(attributedText, for: .normal)
+        button.addTarget(self, action: #selector(handleBackToLoginButtonPressed), for: .touchUpInside)
+        return button
+    }()
+    
+    // MARK: - ViewLifeCycle:
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .white
+        self.setupAddPhotoButton()
+        self.setupInputFields()
+        self.setupBackToLoginButton()
+    }
+    
+    // MARK: - Setup UI  :
+    
+    private func setupAddPhotoButton() {
+        view.addSubview(plusPhotoButton)
+        self.plusPhotoButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: nil, paddingTop: 40, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 140, height: 140)
+        self.plusPhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
+    
+    private func setupInputFields() {
+        
+        let stackView = UIStackView(arrangedSubviews: [ self.emailTextField,
+                                                       self.usernameTextField,
+                                                       self.passwordTextField,
+                                                       self.signUpButton ])
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        stackView.spacing = 10
+        
+        view.addSubview(stackView)
+        stackView.anchor(top: plusPhotoButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 20, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 200)
+        
+    }
+    
+    private func setupBackToLoginButton() {
+        self.view.addSubview(backtoLoginButton)
+        self.backtoLoginButton.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 50)
+    }
+    
+    // MARK: - Handle action :
     @objc func handleSignUp() {
-
-         let email = emailTextField.text!
-         let username = usernameTextField.text!
-         let password = passwordTextField.text!
-        // create user:
+        
+        let email = emailTextField.text!
+        let username = usernameTextField.text!
+        let password = passwordTextField.text!
+        // create user with email and password
         Auth.auth().createUser(withEmail: email, password: password) { [unowned self](result, error) in
             guard error == nil else {
                 LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
                 return
             }
             LogUtils.LogDebug(type: .info, message: "Create user success with uid: \(result!.user.uid)")
-
-            // get profileImage data:
+            
+            // create profileImageData:
             guard let profileImage = self.plusPhotoButton.imageView?.image else {
                 LogUtils.LogDebug(type: .warning, message: "profileImage is nil")
                 return
@@ -142,6 +197,15 @@ class RegisterVC: UIViewController {
                             return
                         }
                         LogUtils.LogDebug(type: .info, message: "Upload user's info success")
+                        
+                        // go to the app:
+                        guard let mainTabBarVC = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else {
+                            LogUtils.LogDebug(type: .error, message: "Fail to get mainTabBarVC")
+                            return
+                        }
+                        mainTabBarVC.setupVC()
+                        LogUtils.LogDebug(type: .info, message: "Login success")
+                        self.dismiss(animated: true, completion: nil)
                     })
                     
                     
@@ -149,41 +213,15 @@ class RegisterVC: UIViewController {
                 
             })
             
-
+            
         } // end Auth.auth().createUser closure
-
-
+        
+        
     } // end handleFunc here
     
-    // MARK: - ViewLifeCycle:
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.addSubview(plusPhotoButton)
-        
-        plusPhotoButton.anchor(top: view.topAnchor, paddingTop: 40, left: nil, paddingLeft: nil, right: nil, paddingRight: nil, bottom: nil, paddingBottom: nil, width: 140, height: 140)
-        
-        plusPhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        
-        self.setupInputFields()
-    }
     
-    fileprivate func setupInputFields() {
-        
-        
-        let stackView = UIStackView(arrangedSubviews: [ self.emailTextField,
-                                                       self.usernameTextField,
-                                                       self.passwordTextField,
-                                                       self.signUpButton ])
-        
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.spacing = 10
-        
-        view.addSubview(stackView)
-        stackView.anchor(top: plusPhotoButton.bottomAnchor, paddingTop: 20, left: view.leftAnchor, paddingLeft: 40, right: view.rightAnchor, paddingRight: -40, bottom: nil, paddingBottom: nil, width: nil, height: 200)
-        
+    @objc func handleBackToLoginButtonPressed() {
+        self.navigationController?.popViewController(animated: true)
     }
     
 }

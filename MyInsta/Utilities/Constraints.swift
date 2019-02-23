@@ -11,3 +11,6 @@ import Firebase
 
 public let databaseRef = Database.database().reference()
 public let storageRef = Storage.storage().reference()
+
+public let cellId = "cellId"
+public let headerId = "headerId"

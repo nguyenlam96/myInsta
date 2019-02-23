@@ -139,14 +139,14 @@ class UserProfileHeader: UICollectionViewCell {
     private func setupProfileImage() {
         
         self.addSubview(profileImageView)
-        profileImageView.anchor(top: self.topAnchor, paddingTop: 12, left: self.leftAnchor, paddingLeft: 12, right: nil, paddingRight: nil, bottom: nil, paddingBottom: nil, width: 80, height: 80)
+        self.profileImageView.anchor(top: topAnchor, left: self.leftAnchor, bottom: nil, right: nil, paddingTop: 12, paddingLeft: 12, paddingBottom: 0, paddingRight: 0, width: 80, height: 80)
     }
     
     private func setupUsernameLabel() {
         
         self.addSubview(usernameLabel)
         
-        usernameLabel.anchor(top: self.profileImageView.bottomAnchor, paddingTop: 4, left: self.leftAnchor, paddingLeft: 12, right: self.rightAnchor, paddingRight: 12, bottom: self.gridButton.topAnchor, paddingBottom: 0, width: nil, height: nil)
+        self.usernameLabel.anchor(top: profileImageView.bottomAnchor, left: leftAnchor, bottom: gridButton.topAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 12, paddingBottom: 0, paddingRight: 12, width: 0, height: 0)
 
     }
     
@@ -156,7 +156,7 @@ class UserProfileHeader: UICollectionViewCell {
             stackView.distribution = .fillEqually
             stackView.axis = .horizontal
         self.addSubview(stackView)
-        stackView.anchor(top: self.topAnchor, paddingTop: 12, left: profileImageView.rightAnchor, paddingLeft: 12, right: self.rightAnchor, paddingRight: -22, bottom: nil, paddingBottom: nil, width: nil, height: 50)
+        stackView.anchor(top: topAnchor, left: profileImageView.rightAnchor, bottom: nil, right: rightAnchor, paddingTop: 12, paddingLeft: 12, paddingBottom: 0, paddingRight: 12, width: 0, height: 50)
     }
     
     private func setupBottomToolBar() {
@@ -168,27 +168,26 @@ class UserProfileHeader: UICollectionViewCell {
             bottomDividerView.backgroundColor = UIColor.lightGray
         
         let stackView = UIStackView(arrangedSubviews: [self.gridButton, self.listButton, self.bookmarkButton])
+            stackView.axis = .horizontal
+            stackView.distribution = .fillEqually
         
         self.addSubview(stackView)
         self.addSubview(topDividerView)
         self.addSubview(bottomDividerView)
         
-        stackView.anchor(top: nil, paddingTop: nil, left: self.leftAnchor, paddingLeft: 0, right: self.rightAnchor, paddingRight: 0, bottom: self.bottomAnchor, paddingBottom: 0, width: nil, height: 50)
-        stackView.distribution = .fillEqually
-        stackView.axis = .horizontal
+        stackView.anchor(top: nil, left: leftAnchor, bottom: self.bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 50)
         
-        topDividerView.anchor(top: stackView.topAnchor, paddingTop: 0, left: self.leftAnchor, paddingLeft: 0, right: self.rightAnchor, paddingRight: 0, bottom: nil, paddingBottom: nil, width: nil, height: 0.5)
+        topDividerView.anchor(top: stackView.topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
         
-        bottomDividerView.anchor(top: stackView.bottomAnchor, paddingTop: 0, left: self.leftAnchor, paddingLeft: 0, right: self.rightAnchor, paddingRight: 0, bottom: nil, paddingBottom: nil, width: nil, height: 0.5)
+        bottomDividerView.anchor(top: stackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
         
     }
     
     private func setupEditProfileButton() {
         
         self.addSubview(editProfileButton)
-//        editProfileButton.anchor(top: postLabel.bottomAnchor, paddingTop: 8, left: postLabel.leftAnchor, paddingLeft: 0, right: followingLabel.rightAnchor, paddingRight: 0, bottom: nil, paddingBottom: 0, width: 0, height: 34)
         self.editProfileButton.frame = CGRect(x: postLabel.frame.origin.x, y: 0, width: 0, height: 34)
-        self.editProfileButton.anchor(top: postLabel.bottomAnchor, paddingTop: 0, left: postLabel.leftAnchor, paddingLeft: 10, right: followingLabel.rightAnchor, paddingRight: 0, bottom: nil, paddingBottom: nil, width: nil, height: nil)
+        self.editProfileButton.anchor(top: postLabel.bottomAnchor, left: postLabel.leftAnchor, bottom: nil, right: followingLabel.rightAnchor, paddingTop: 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 34)
     }
     
     // MARK: - Private Funcs :
@@ -210,6 +209,19 @@ class UserProfileHeader: UICollectionViewCell {
                 return
             }
             // check response value == 200 HTTP
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode != 200 {
+                    LogUtils.LogDebug(type: .error, message: "Status code: \(httpResponse.statusCode)")
+                }
+            } else {
+                LogUtils.LogDebug(type: .error, message: "response is nil")
+            }
+            
+            if profileImageUrl.absoluteString != self.user?.profileImageStringUrl {
+                return
+            }
+            
+            // check data:
             guard let data = data else {
                 LogUtils.LogDebug(type: .error, message: "data is nil")
                 return
