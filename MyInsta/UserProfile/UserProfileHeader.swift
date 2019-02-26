@@ -13,18 +13,19 @@ class UserProfileHeader: UICollectionViewCell {
     // MARK: -
     var isFollowing: Bool? {
         didSet {
-            handleUpdateUIFollowUnfollowButton()
+            updateUIOfFollowButton()
         }
     }
     var user: User? {
         
         didSet {
+            // ensure user is not nil
             guard let user = user else {
                 LogUtils.LogDebug(type: .error, message: "user is nil")
                 return
             }
             LogUtils.LogDebug(type: .info, message: "Didset user: \(user.username)")
-            // check if currentUser or searchedUser:
+            // check if currentUser OR searchedUser:
             let currentUid = Auth.auth().currentUser?.uid
             if user.uid != currentUid { // not current user
                 self.editProfileButton.isHidden = true
@@ -33,8 +34,8 @@ class UserProfileHeader: UICollectionViewCell {
                 self.followButton.isHidden = true
                 self.editProfileButton.isHidden = false
             }
-            // check if following:
-            databaseRef.child("following").child(currentUid!).child(user.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            // check if is following OR not
+            databaseRef.child("following").child(currentUid!).child(user.uid).observeSingleEvent(of: .value, with: { [unowned self](snapshot) in
                 
                 if let following = snapshot.value as? Int, following == 1 {
                     self.isFollowing = true
@@ -52,7 +53,7 @@ class UserProfileHeader: UICollectionViewCell {
         }
     }
     
-    private func handleUpdateUIFollowUnfollowButton() {
+    private func updateUIOfFollowButton() {
         if self.isFollowing == true {
             // unfollow button
             self.followButton.setTitle("Unfollow", for: .normal)
@@ -154,16 +155,9 @@ class UserProfileHeader: UICollectionViewCell {
     lazy var followButton: UIButton = {
         
         let button = UIButton(type: UIButton.ButtonType.system)
-//        button.setTitle("Follow", for: .normal)
-//        button.setTitleColor(.white, for: .normal)
-//        button.backgroundColor = UIColor.rgb(r: 17, g: 154, b: 273)
-//        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-////        button.setTitleColor(.black, for: .normal)
-////        button.layer.borderColor = UIColor.lightGray.cgColor
-//        button.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
-        button.layer.borderWidth = 1
-        button.layer.cornerRadius = 3
-        button.addTarget(self, action: #selector(handleFollowButtonPressed), for: .touchUpInside)
+            button.layer.borderWidth = 1
+            button.layer.cornerRadius = 3
+            button.addTarget(self, action: #selector(handleFollowButtonPressed), for: .touchUpInside)
         return button
     }()
     // bottom tool bar:
@@ -274,7 +268,7 @@ class UserProfileHeader: UICollectionViewCell {
             return
         }
 
-        URLSession.shared.dataTask(with: profileImageUrl ) { (data, response, error) in
+        URLSession.shared.dataTask(with: profileImageUrl ) { [unowned self](data, response, error) in
             
             guard error == nil else {
                 LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
@@ -329,7 +323,7 @@ class UserProfileHeader: UICollectionViewCell {
         
         if self.isFollowing == false {
             // do follow:
-            databaseRef.child("following").child(currentLoggedUserId).updateChildValues(value) { (error, ref) in
+            databaseRef.child("following").child(currentLoggedUserId).updateChildValues(value) { [unowned self](error, ref) in
                 
                 if let error = error {
                     LogUtils.LogDebug(type: .error, message: error.localizedDescription)
@@ -342,7 +336,7 @@ class UserProfileHeader: UICollectionViewCell {
             }
         } else {
             // delete follow
-            databaseRef.child("following").child(currentLoggedUserId).child((self.user?.uid)!).removeValue { (error, ref) in
+            databaseRef.child("following").child(currentLoggedUserId).child((self.user?.uid)!).removeValue { [unowned self](error, ref) in
                 if let error = error {
                     LogUtils.LogDebug(type: .error, message: error.localizedDescription)
                     return
