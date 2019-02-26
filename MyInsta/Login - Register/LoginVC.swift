@@ -93,7 +93,7 @@ class LoginVC: UIViewController {
         setupSignUpButton()
         setupLogoContainerView()
         setupInputFields()
-
+        self.dismissKeyboardWhenTappingArround()
     }
     
     // MARK: - Setup UI :
@@ -156,6 +156,16 @@ class LoginVC: UIViewController {
         self.navigationController?.pushViewController(registerVC, animated: true)
     }
     
+    // MARK: -
+    func dismissKeyboardWhenTappingArround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        self.view.isUserInteractionEnabled = true
+        self.view.addGestureRecognizer(tap)
+    }
+    @objc func dismissKeyboard() {
+        self.view.endEditing(true)
+    }
+
     
     
 }

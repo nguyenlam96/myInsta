@@ -49,7 +49,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
                 LogUtils.LogDebug(type: .error, message: "userDict is empty")
                 return
             }
-            let user = User(dictionary: userDict)
+            let user = User(uid: uid, dictionary: userDict)
             
             // fetch post:
             databaseRef.child("posts").child(uid).observeSingleEvent(of: DataEventType.value, with: { [unowned self](snapshot) in

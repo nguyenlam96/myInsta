@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		050938992225269D00B44E70 /* UserSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050938982225269D00B44E70 /* UserSearchVC.swift */; };
+		0509389B22252C9200B44E70 /* UserSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0509389A22252C9200B44E70 /* UserSearchCell.swift */; };
 		0526C26E2209E29C0071403F /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0526C26D2209E29C0071403F /* LoginVC.swift */; };
 		0526C272220AC7330071403F /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0526C271220AC7330071403F /* HomeVC.swift */; };
-		0526C274220AC8000071403F /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0526C273220AC8000071403F /* SearchVC.swift */; };
 		0526C276220AD5A10071403F /* PhotoSelectorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0526C275220AD5A10071403F /* PhotoSelectorVC.swift */; };
 		052BB04C220CB60300F7D7D6 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052BB04B220CB60300F7D7D6 /* Post.swift */; };
 		052BB04E220CB83900F7D7D6 /* UserProfilePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052BB04D220CB83900F7D7D6 /* UserProfilePhotoCell.swift */; };
@@ -35,9 +36,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		050938982225269D00B44E70 /* UserSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchVC.swift; sourceTree = "<group>"; };
+		0509389A22252C9200B44E70 /* UserSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchCell.swift; sourceTree = "<group>"; };
 		0526C26D2209E29C0071403F /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		0526C271220AC7330071403F /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
-		0526C273220AC8000071403F /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
 		0526C275220AD5A10071403F /* PhotoSelectorVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorVC.swift; sourceTree = "<group>"; };
 		052BB04B220CB60300F7D7D6 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		052BB04D220CB83900F7D7D6 /* UserProfilePhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePhotoCell.swift; sourceTree = "<group>"; };
@@ -184,7 +186,8 @@
 		05F5937C2211EB300024FCBE /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				0526C273220AC8000071403F /* SearchVC.swift */,
+				050938982225269D00B44E70 /* UserSearchVC.swift */,
+				0509389A22252C9200B44E70 /* UserSearchCell.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -344,7 +347,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0526C274220AC8000071403F /* SearchVC.swift in Sources */,
+				0509389B22252C9200B44E70 /* UserSearchCell.swift in Sources */,
 				05D9B38722057F7C000288B7 /* LogUtils.swift in Sources */,
 				05D9B37222057E55000288B7 /* RegisterVC.swift in Sources */,
 				0547B293220C3D6700FCA3FF /* SharePhotoVC.swift in Sources */,
@@ -359,6 +362,7 @@
 				05D9B38922057F89000288B7 /* Constraints.swift in Sources */,
 				05DB24902205ED9600D046D9 /* User.swift in Sources */,
 				054CAD7B2205A44200709E53 /* UserProfileVC.swift in Sources */,
+				050938992225269D00B44E70 /* UserSearchVC.swift in Sources */,
 				05D9B38522057F59000288B7 /* Extensions.swift in Sources */,
 				0526C272220AC7330071403F /* HomeVC.swift in Sources */,
 				05F593812211ED450024FCBE /* HomePostCell.swift in Sources */,

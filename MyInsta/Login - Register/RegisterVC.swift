@@ -109,6 +109,7 @@ class RegisterVC: UIViewController {
         self.setupAddPhotoButton()
         self.setupInputFields()
         self.setupBackToLoginButton()
+        self.dismissKeyboardWhenTappingArround()
     }
     
     // MARK: - Setup UI  :
@@ -224,6 +225,17 @@ class RegisterVC: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
+    // MARK: -
+    func dismissKeyboardWhenTappingArround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        self.view.isUserInteractionEnabled = true
+        self.view.addGestureRecognizer(tap)
+    }
+    @objc func dismissKeyboard() {
+        self.view.endEditing(true)
+    }
+
+    
 }
 // MARK: - ImagePickerCOntrollerDelegate :
 extension RegisterVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -243,5 +255,7 @@ extension RegisterVC: UIImagePickerControllerDelegate, UINavigationControllerDel
         
         self.dismiss(animated: true, completion: nil)
     }
+    
+    
     
 }

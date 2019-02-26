@@ -12,7 +12,14 @@ import Firebase
 class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 
     // MARK: - Properties:
-    var user: User?
+    var user: User? {
+        didSet {
+            if user != nil {
+                LogUtils.LogDebug(type: .info, message: (user?.username)!)
+            }
+            
+        }
+    }
     let cellId = "cellId"
     let headerId = "headerId"
     var posts: [Post] = []
@@ -28,6 +35,10 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         self.fetchOrderedPosts()
     }
     
+    deinit {
+        print("=== UserProfileVC is deinit")
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
@@ -35,7 +46,12 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     
     // MARK: - Setup When ViewDidLoad:
     private func setupLogoutButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogout))
+        if self.user == nil {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal),
+                                                                 style: .plain,
+                                                                 target: self,
+                                                                 action: #selector(handleLogout))
+        }
     }
     
     @objc func handleLogout() {
@@ -112,7 +128,14 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
 
     private func fetchUser() {
         
-        if let uid = Auth.auth().currentUser?.uid {
+        if let _ = self.user?.uid {
+            LogUtils.LogDebug(type: .info, message: "search uid")
+        } else if let _ = Auth.auth().currentUser?.uid {
+            LogUtils.LogDebug(type: .info, message: "current uid")
+        }
+        
+            let uid = self.user?.uid ?? Auth.auth().currentUser?.uid ?? ""
+        
             databaseRef.child("users").child(uid).observeSingleEvent(of: DataEventType.value, with: { [unowned self](snapshot) in
                 
                 guard let userInfoDict = snapshot.value as? [String:Any] else {
@@ -120,7 +143,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                     return
                 }
                 
-                self.user = User(dictionary: userInfoDict)
+                self.user = User(uid: uid, dictionary: userInfoDict)
                 self.navigationItem.title = self.user?.username ?? "DefaulName"
                 
                 self.collectionView.reloadData()
@@ -129,19 +152,17 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                 LogUtils.LogDebug(type: .error, message: error.localizedDescription)
                 return
             }
-        } else {
-            LogUtils.LogDebug(type: .error, message: "uid is nil")
-        }
-        
     }
-
     
     private func fetchOrderedPosts() {
         
-        guard let uid = Auth.auth().currentUser?.uid else {
-            LogUtils.LogDebug(type: .error, message: "uid is nil")
-            return
+        if let _ = self.user?.uid {
+            LogUtils.LogDebug(type: .info, message: "search uid")
+        } else if let _ = Auth.auth().currentUser?.uid {
+            LogUtils.LogDebug(type: .info, message: "current uid")
         }
+        
+        let uid = self.user?.uid ?? Auth.auth().currentUser?.uid ?? ""
         databaseRef.child("posts").child(uid).queryOrdered(byChild: "createdTime").observe(DataEventType.childAdded, with: { [unowned self](snapshot) in
             
             guard let postsDict = snapshot.value as? [String:Any] else {
@@ -161,4 +182,5 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         }
     }
     
+
 }

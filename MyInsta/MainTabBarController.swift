@@ -47,27 +47,22 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        self.selectedIndex = 0 // this selectedIndex belong to UITabBarController, change it to set defaul tabbar
+        self.selectedIndex = 1 // this selectedIndex belong to UITabBarController, change it to set defaul tabbar
         ///        self.tabBarController?.selectedIndex = 4  --> this tabBarController property is the nearest ancester UITabBarController of this viewController ( will be nil because this VC doesn't have any super UITabBarController )
-//        LogUtils.LogDebug(type: .info, message: "selectedIndex: \(String(describing: self.selectedIndex))")
     }
     
     func setupVC() {
         // home:
         let homeNavController = templateNavController(image: #imageLiteral(resourceName: "home_unselected"), selectedImage: #imageLiteral(resourceName: "home_selected"), rootVC: HomeVC(collectionViewLayout: UICollectionViewFlowLayout()) )
         // search:
-        let searchNavController = templateNavController(image: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"))
+        let searchNavController = templateNavController(image: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootVC: UserSearchVC(collectionViewLayout: UICollectionViewFlowLayout() ))
         // plus:
         let plusNavController = templateNavController(image: #imageLiteral(resourceName: "plus_unselected"), selectedImage: #imageLiteral(resourceName: "plus_unselected"))
         // heart:
         let likeNavController = templateNavController(image: #imageLiteral(resourceName: "like_unselected"), selectedImage: #imageLiteral(resourceName: "like_selected"))
         // profile:
-        let userProfileVC = UserProfileVC(collectionViewLayout: UICollectionViewFlowLayout() )
-        let userProfileNavController = UINavigationController(rootViewController: userProfileVC)
-        
-        userProfileNavController.tabBarItem.image =  #imageLiteral(resourceName: "profile_unselected")
-        userProfileNavController.tabBarItem.selectedImage =  #imageLiteral(resourceName: "profile_selected")
-        
+        let userProfileNavController = templateNavController(image: #imageLiteral(resourceName: "profile_unselected"), selectedImage: #imageLiteral(resourceName: "profile_selected"), rootVC:  UserProfileVC(collectionViewLayout: UICollectionViewFlowLayout() ))
+
         self.tabBar.tintColor = .black
         self.viewControllers = [homeNavController, searchNavController, plusNavController, likeNavController, userProfileNavController]
         guard let items = tabBar.items else {
@@ -81,8 +76,8 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     private func templateNavController(image: UIImage, selectedImage: UIImage, rootVC: UIViewController = UIViewController() ) -> UINavigationController {
 
-        let viewController = rootVC
-        let navController = UINavigationController(rootViewController: viewController)
+//        let viewController = rootVC
+        let navController = UINavigationController(rootViewController: rootVC)
         
         navController.tabBarItem.image = image
         navController.tabBarItem.selectedImage = selectedImage

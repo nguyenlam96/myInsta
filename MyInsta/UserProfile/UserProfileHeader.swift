@@ -6,22 +6,72 @@
 //  Copyright © 2019 Nguyen Lam. All rights reserved.
 //
 
-import Foundation
+import Firebase
 import UIKit
 
 class UserProfileHeader: UICollectionViewCell {
-    
-    // MARK: - Properties:
-    var user: User? {
+    // MARK: -
+    var isFollowing: Bool? {
         didSet {
-            if user != nil {
-                self.loadProfileImage()
-                self.usernameLabel.text = user?.username ?? "DefaulName"
+            handleUpdateUIFollowUnfollowButton()
+        }
+    }
+    var user: User? {
+        
+        didSet {
+            guard let user = user else {
+                LogUtils.LogDebug(type: .error, message: "user is nil")
+                return
             }
+            LogUtils.LogDebug(type: .info, message: "Didset user: \(user.username)")
+            // check if currentUser or searchedUser:
+            let currentUid = Auth.auth().currentUser?.uid
+            if user.uid != currentUid { // not current user
+                self.editProfileButton.isHidden = true
+                self.followButton.isHidden = false
+            } else { // current user
+                self.followButton.isHidden = true
+                self.editProfileButton.isHidden = false
+            }
+            // check if following:
+            databaseRef.child("following").child(currentUid!).child(user.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                
+                if let following = snapshot.value as? Int, following == 1 {
+                    self.isFollowing = true
+                } else {
+                    self.isFollowing = false
+                }
+                
+            }) { (error) in
+                LogUtils.LogDebug(type: .error, message: "")
+            }
+            // load image:
+            self.loadProfileImage()
+            self.usernameLabel.text = user.username
+            
         }
     }
     
-    // MARK: - Create UI :
+    private func handleUpdateUIFollowUnfollowButton() {
+        if self.isFollowing == true {
+            // unfollow button
+            self.followButton.setTitle("Unfollow", for: .normal)
+            self.followButton.setTitleColor(.black, for: .normal)
+            self.followButton.backgroundColor = UIColor.white
+            self.followButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+            //        button.setTitleColor(.black, for: .normal)
+            self.followButton.layer.borderColor = UIColor.lightGray.cgColor
+        } else {
+            // follow button
+            self.followButton.setTitle("Follow", for: .normal)
+            self.followButton.setTitleColor(.white, for: .normal)
+            self.followButton.backgroundColor = UIColor.rgb(r: 17, g: 154, b: 273)
+            self.followButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+            self.followButton.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
+        }
+    }
+    
+    // MARK: -
     
     // profile image
     let profileImageView: UIImageView = {
@@ -48,7 +98,7 @@ class UserProfileHeader: UICollectionViewCell {
         
         attributedText.append(NSAttributedString(string: "posts", attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray,
                                                                                    NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)]))
-        
+  
         let label = UILabel()
             label.attributedText = attributedText
             label.numberOfLines = 0
@@ -84,11 +134,12 @@ class UserProfileHeader: UICollectionViewCell {
             label.font = UIFont.systemFont(ofSize: 12)
             label.numberOfLines = 0
             label.textAlignment = .center
+        
         return label
     }()
     
     // edit profile button
-    let editProfileButton: UIButton = {
+    lazy var editProfileButton: UIButton = {
         
         let button = UIButton(type: UIButton.ButtonType.system)
             button.setTitle("Edit Profile", for: .normal)
@@ -97,9 +148,24 @@ class UserProfileHeader: UICollectionViewCell {
             button.layer.borderColor = UIColor.lightGray.cgColor
             button.layer.borderWidth = 1
             button.layer.cornerRadius = 3
+        button.addTarget(self, action: #selector(handleEditButtonPressed), for: .touchUpInside)
         return button
     }()
-    
+    lazy var followButton: UIButton = {
+        
+        let button = UIButton(type: UIButton.ButtonType.system)
+//        button.setTitle("Follow", for: .normal)
+//        button.setTitleColor(.white, for: .normal)
+//        button.backgroundColor = UIColor.rgb(r: 17, g: 154, b: 273)
+//        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+////        button.setTitleColor(.black, for: .normal)
+////        button.layer.borderColor = UIColor.lightGray.cgColor
+//        button.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 3
+        button.addTarget(self, action: #selector(handleFollowButtonPressed), for: .touchUpInside)
+        return button
+    }()
     // bottom tool bar:
     let gridButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.system)
@@ -109,7 +175,7 @@ class UserProfileHeader: UICollectionViewCell {
     
     let listButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.system)
-        button.tintColor = UIColor(white: 0, alpha: 0.5)
+            button.tintColor = UIColor(white: 0, alpha: 0.5)
             button.setImage(#imageLiteral(resourceName: "list"), for: .normal)
         return button
     }()
@@ -121,7 +187,7 @@ class UserProfileHeader: UICollectionViewCell {
         return button
     }()
     
-    // MARK: - Int frame:
+    // MARK: -
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupProfileImage()
@@ -129,13 +195,14 @@ class UserProfileHeader: UICollectionViewCell {
         self.setupUsernameLabel()
         self.setupStateView()
         self.setupEditProfileButton()
+        self.setupFollowButton()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("Init(coder:) has not been implemented")
     }
     
-    // MARK: - SetupUI funcs :
+    // MARK: -
     private func setupProfileImage() {
         
         self.addSubview(profileImageView)
@@ -189,8 +256,13 @@ class UserProfileHeader: UICollectionViewCell {
         self.editProfileButton.frame = CGRect(x: postLabel.frame.origin.x, y: 0, width: 0, height: 34)
         self.editProfileButton.anchor(top: postLabel.bottomAnchor, left: postLabel.leftAnchor, bottom: nil, right: followingLabel.rightAnchor, paddingTop: 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 34)
     }
-    
-    // MARK: - Private Funcs :
+    private func setupFollowButton() {
+        
+        self.addSubview(followButton)
+        self.followButton.frame = CGRect(x: postLabel.frame.origin.x, y: 0, width: 0, height: 34)
+        self.followButton.anchor(top: postLabel.bottomAnchor, left: postLabel.leftAnchor, bottom: nil, right: followingLabel.rightAnchor, paddingTop: 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 34)
+    }
+    // MARK: -
     private func loadProfileImage() {
         
         guard let urlString = self.user?.profileImageStringUrl else {
@@ -236,6 +308,52 @@ class UserProfileHeader: UICollectionViewCell {
  
     }
     
+    @objc private func handleEditButtonPressed() {
+        LogUtils.LogDebug(type: .info, message: "\(#function)")
+    }
+    
+    @objc private func handleFollowButtonPressed() {
+        
+        LogUtils.LogDebug(type: .info, message: "\(#function)")
+        
+        guard let currentLoggedUserId = Auth.auth().currentUser?.uid else {
+            LogUtils.LogDebug(type: .info, message: "currentUid is nil")
+            return
+        }
+        guard let uid = self.user?.uid else {
+            LogUtils.LogDebug(type: .info, message: "searchedUser uid is nil")
+            return
+        }
+        
+        let value = [uid:1]
+        
+        if self.isFollowing == false {
+            // do follow:
+            databaseRef.child("following").child(currentLoggedUserId).updateChildValues(value) { (error, ref) in
+                
+                if let error = error {
+                    LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                    return
+                }
+                self.isFollowing = true
+                LogUtils.LogDebug(type: .info, message: "Successfully follow the user: \(String(describing: self.user?.username))" )
+                
+                
+            }
+        } else {
+            // delete follow
+            databaseRef.child("following").child(currentLoggedUserId).child((self.user?.uid)!).removeValue { (error, ref) in
+                if let error = error {
+                    LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                    return
+                }
+                self.isFollowing = false
+                LogUtils.LogDebug(type: .info, message: "Successfully unfollow the user: \(String(describing: self.user?.username))")
+            }
+        }
+        
+        
+    }
     
     
     
