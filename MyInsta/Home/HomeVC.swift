@@ -22,15 +22,44 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         self.setupNavigationTitle()
         self.collectionView.backgroundColor = .white
         self.collectionView.register(HomePostCell.self, forCellWithReuseIdentifier: self.cellId)
-//        self.fetchPosts()
-        self.fetchFollowingUserPosts()
+        
+        self.setupNotificationObserve()
+        self.setupRefreshControl()
+        self.fetchPostsByCurrentUser()
+        self.fetchPostsByFollowingUsers()
         
     }
     
     
     // MARK: -
     
-    private func fetchFollowingUserPosts() {
+    private func setupNotificationObserve() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdateNewPostNotification), name: CustomNotification.UpdateNewPost, object: nil)
+    }
+    
+    @objc func handleUpdateNewPostNotification() {
+        LogUtils.LogDebug(type: .info, message: "\(#function)")
+        self.handleRefresh()
+    }
+    
+    private func setupRefreshControl() {
+        
+        let refreshControl = UIRefreshControl()
+            refreshControl.addTarget(self, action: #selector(handleRefresh), for: UIControl.Event.valueChanged)
+        self.collectionView.refreshControl = refreshControl
+        
+    }
+    
+    
+    @objc func handleRefresh() {
+        print("handle refresh")
+        self.posts.removeAll()
+        self.fetchPostsByCurrentUser()
+        self.fetchPostsByFollowingUsers()
+    }
+    
+    private func fetchPostsByFollowingUsers() {
+        
         guard let currentUid = Auth.auth().currentUser?.uid else {
             return
         }
@@ -71,10 +100,10 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     
     // MARK: -
-    private func fetchPosts() {
+    private func fetchPostsByCurrentUser() {
         
         guard let uid = Auth.auth().currentUser?.uid else {
-            LogUtils.LogDebug(type: .error, message: "uid is nil")
+            LogUtils.LogDebug(type: .error, message: "current uid is nil")
             return
         }
         
@@ -103,6 +132,8 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         let uid = user.uid
         databaseRef.child("posts").child(uid).observeSingleEvent(of: DataEventType.value, with: { [unowned self](snapshot) in
             
+            /// stop refresh controller after getting value
+            self.collectionView.refreshControl?.endRefreshing()
             /// get all posts by currentUser:
             guard let postDicts = snapshot.value as? [String:Any] else {
                 LogUtils.LogDebug(type: .error, message: "Can't cast snapshot.value to String:Any")

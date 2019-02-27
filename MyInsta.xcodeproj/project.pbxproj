@@ -14,6 +14,7 @@
 		0526C276220AD5A10071403F /* PhotoSelectorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0526C275220AD5A10071403F /* PhotoSelectorVC.swift */; };
 		052BB04C220CB60300F7D7D6 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052BB04B220CB60300F7D7D6 /* Post.swift */; };
 		052BB04E220CB83900F7D7D6 /* UserProfilePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052BB04D220CB83900F7D7D6 /* UserProfilePhotoCell.swift */; };
+		0546BB66222700D600ADDD4E /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0546BB65222700D600ADDD4E /* Notification.swift */; };
 		0547B28F220B3E1F00FCA3FF /* PhotoSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0547B28E220B3E1F00FCA3FF /* PhotoSelectorCell.swift */; };
 		0547B291220B5B2300FCA3FF /* PhotoSelectorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0547B290220B5B2300FCA3FF /* PhotoSelectorHeader.swift */; };
 		0547B293220C3D6700FCA3FF /* SharePhotoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0547B292220C3D6700FCA3FF /* SharePhotoVC.swift */; };
@@ -43,6 +44,7 @@
 		0526C275220AD5A10071403F /* PhotoSelectorVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorVC.swift; sourceTree = "<group>"; };
 		052BB04B220CB60300F7D7D6 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		052BB04D220CB83900F7D7D6 /* UserProfilePhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePhotoCell.swift; sourceTree = "<group>"; };
+		0546BB65222700D600ADDD4E /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		0547B28E220B3E1F00FCA3FF /* PhotoSelectorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorCell.swift; sourceTree = "<group>"; };
 		0547B290220B5B2300FCA3FF /* PhotoSelectorHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorHeader.swift; sourceTree = "<group>"; };
 		0547B292220C3D6700FCA3FF /* SharePhotoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePhotoVC.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 				05D9B38622057F7C000288B7 /* LogUtils.swift */,
 				05D9B38822057F89000288B7 /* Constraints.swift */,
 				05D9B38422057F59000288B7 /* Extensions.swift */,
+				0546BB65222700D600ADDD4E /* Notification.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 				0547B291220B5B2300FCA3FF /* PhotoSelectorHeader.swift in Sources */,
 				0547B28F220B3E1F00FCA3FF /* PhotoSelectorCell.swift in Sources */,
 				054CAD792205A34700709E53 /* MainTabBarController.swift in Sources */,
+				0546BB66222700D600ADDD4E /* Notification.swift in Sources */,
 				05DB248D2205E21500D046D9 /* UserProfileHeader.swift in Sources */,
 				05AF9C1722212CBA007178CC /* CustomImageView.swift in Sources */,
 				0526C26E2209E29C0071403F /* LoginVC.swift in Sources */,

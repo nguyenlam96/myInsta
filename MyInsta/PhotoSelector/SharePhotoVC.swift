@@ -149,6 +149,8 @@ class SharePhotoVC: UIViewController {
                     }
                     LogUtils.LogDebug(type: .info, message: "Save to DB successfully")
                     self.dismiss(animated: true, completion: nil)
+                    // post to homeVC know that new post were posted
+                    NotificationCenter.default.post(name: CustomNotification.UpdateNewPost, object: nil)
                 })
                 
             }) // end downloadURL{}
