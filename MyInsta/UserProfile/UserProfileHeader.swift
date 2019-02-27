@@ -319,7 +319,7 @@ class UserProfileHeader: UICollectionViewCell {
             return
         }
         
-        let value = [uid:1]
+        let value = [ uid:1 ]
         
         if self.isFollowing == false {
             // do follow:

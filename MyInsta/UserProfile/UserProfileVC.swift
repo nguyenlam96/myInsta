@@ -169,7 +169,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                 LogUtils.LogDebug(type: .error, message: "Can't cast snapshot.value to String:Any")
                 return
             }
-            guard let user = self.user else {
+            guard let user = self.user else { /// Attempted to read an unowned reference but the object was already deallocated2019-02-27 00:04:31.915516+0700 MyInsta[29567:8219404] Fatal error: Attempted to read an unowned reference but the object was already deallocated
                 LogUtils.LogDebug(type: .error, message: "user doesn't exist")
                 return
             }

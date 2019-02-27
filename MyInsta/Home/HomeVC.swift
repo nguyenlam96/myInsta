@@ -12,20 +12,56 @@ import Firebase
 
 class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    // MARK: - Properties:
+    // MARK: -
     let cellId = "cellId"
     var posts = [Post]()
-    // MARK: - ViewLifeCycle:
+    // MARK: -
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.setupNavigationTitle()
         self.collectionView.backgroundColor = .white
         self.collectionView.register(HomePostCell.self, forCellWithReuseIdentifier: self.cellId)
-        self.fetchPosts()
+//        self.fetchPosts()
+        self.fetchFollowingUserPosts()
+        
     }
     
-    // MARK: - Setup When ViewDidLoad:
+    
+    // MARK: -
+    
+    private func fetchFollowingUserPosts() {
+        guard let currentUid = Auth.auth().currentUser?.uid else {
+            return
+        }
+        databaseRef.child("following").child(currentUid).observeSingleEvent(of: .value, with: { [unowned self](snapshot) in
+            
+            guard let followingUserIds = snapshot.value as? [String:Any] else {
+                LogUtils.LogDebug(type: .error, message: "Something wrong")
+                return
+            }
+            for (key, _) in followingUserIds {
+                
+                databaseRef.child("users").child(key).observeSingleEvent(of: .value, with: { [unowned self](snapshot) in
+                    if let userDict = snapshot.value as? [String:Any] {
+                        let user = User(uid: key, dictionary: userDict)
+                        self.fetchPostWithUser(user: user)
+                    } else {
+                        LogUtils.LogDebug(type: .info, message: "This user doesn't existed")
+                    }
+                }, withCancel: { (error) in
+                    LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                    return
+                })
+                
+            }
+            
+        }) { (error) in
+            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+            return
+        }
+    }
+    
     private func setupNavigationTitle() {
         let logoView = UIImageView(image: #imageLiteral(resourceName: "text_logo"))
             logoView.contentMode = .scaleAspectFit
@@ -34,7 +70,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     }
     
     
-    // MARK: - Network funcs:
+    // MARK: -
     private func fetchPosts() {
         
         guard let uid = Auth.auth().currentUser?.uid else {
@@ -52,28 +88,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
             let user = User(uid: uid, dictionary: userDict)
             
             // fetch post:
-            databaseRef.child("posts").child(uid).observeSingleEvent(of: DataEventType.value, with: { [unowned self](snapshot) in
-                // get all posts by currentUser:
-                guard let postsDict = snapshot.value as? [String:Any] else {
-                    LogUtils.LogDebug(type: .error, message: "Can't cast snapshot.value to String:Any")
-                    return
-                }
-                // loop through each post:
-                postsDict.forEach({ [unowned self](key, value) in
-                    // handle single post:
-                    guard let singlePostDict = value as? [String:Any] else {
-                        LogUtils.LogDebug(type: .error, message: "Can't fetch single post")
-                        return
-                    }
-//                    let dummyUser = User(dictionary: ["username":"NguyenLam"])
-                    let post = Post(dictionary: singlePostDict, by: user)
-                    self.posts.append(post)
-                }) // end loop
-                self.collectionView.reloadData()
-            }) { (error) in
-                LogUtils.LogDebug(type: .error, message: error.localizedDescription)
-                return
-            }
+            self.fetchPostWithUser(user: user)
             
         }) { (error) in
             LogUtils.LogDebug(type: .error, message: error.localizedDescription)
@@ -81,6 +96,36 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         }
         
         
+    }
+    
+    private func fetchPostWithUser(user: User) {
+        // fetch post:
+        let uid = user.uid
+        databaseRef.child("posts").child(uid).observeSingleEvent(of: DataEventType.value, with: { [unowned self](snapshot) in
+            
+            /// get all posts by currentUser:
+            guard let postDicts = snapshot.value as? [String:Any] else {
+                LogUtils.LogDebug(type: .error, message: "Can't cast snapshot.value to String:Any")
+                return
+            }
+            postDicts.forEach({ [unowned self](key, value) in
+                guard let singlePostDict = value as? [String:Any] else {
+                    LogUtils.LogDebug(type: .error, message: "Can't fetch single post")
+                    return
+                }
+                let post = Post(dictionary: singlePostDict, by: user)
+                self.posts.append(post)
+            }) // end loop
+            
+            self.posts.sort(by: { (post1, post2) -> Bool in
+                return post1.createdTime.compare(post2.createdTime) == .orderedDescending
+            })
+            
+            self.collectionView.reloadData()
+        }) { (error) in
+            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+            return
+        }
     }
     
     
