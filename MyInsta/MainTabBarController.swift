@@ -47,7 +47,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        self.selectedIndex = 1 // this selectedIndex belong to UITabBarController, change it to set defaul tabbar
+        self.selectedIndex = 0 // this selectedIndex belong to UITabBarController, change it to set defaul tabbar
         ///        self.tabBarController?.selectedIndex = 4  --> this tabBarController property is the nearest ancester UITabBarController of this viewController ( will be nil because this VC doesn't have any super UITabBarController )
     }
     

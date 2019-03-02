@@ -20,6 +20,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         super.viewDidLoad()
         
         self.setupNavigationTitle()
+        self.setupNavigationItem()
         self.collectionView.backgroundColor = .white
         self.collectionView.register(HomePostCell.self, forCellWithReuseIdentifier: self.cellId)
         
@@ -32,6 +33,20 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     
     // MARK: -
+    private func setupNavigationTitle() {
+        let logoView = UIImageView(image: #imageLiteral(resourceName: "text_logo"))
+        logoView.contentMode = .scaleAspectFit
+        /// because this HomeVC belong to a NavigationController, navigationItem property is used to modify the display of UINavigationBar of this VC in parent's navigation bar:
+        self.navigationItem.titleView = logoView
+    }
+    private func setupNavigationItem() {
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera3").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
+    }
+    
+    @objc func handleCamera() {
+        let cameraController = CameraController()
+        self.present(cameraController, animated: true, completion: nil)
+    }
     
     private func setupNotificationObserve() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleUpdateNewPostNotification), name: CustomNotification.UpdateNewPost, object: nil)
@@ -58,45 +73,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         self.fetchPostsByFollowingUsers()
     }
     
-    private func fetchPostsByFollowingUsers() {
-        
-        guard let currentUid = Auth.auth().currentUser?.uid else {
-            return
-        }
-        databaseRef.child("following").child(currentUid).observeSingleEvent(of: .value, with: { [unowned self](snapshot) in
-            
-            guard let followingUserIds = snapshot.value as? [String:Any] else {
-                LogUtils.LogDebug(type: .error, message: "Something wrong")
-                return
-            }
-            for (key, _) in followingUserIds {
-                
-                databaseRef.child("users").child(key).observeSingleEvent(of: .value, with: { [unowned self](snapshot) in
-                    if let userDict = snapshot.value as? [String:Any] {
-                        let user = User(uid: key, dictionary: userDict)
-                        self.fetchPostWithUser(user: user)
-                    } else {
-                        LogUtils.LogDebug(type: .info, message: "This user doesn't existed")
-                    }
-                }, withCancel: { (error) in
-                    LogUtils.LogDebug(type: .error, message: error.localizedDescription)
-                    return
-                })
-                
-            }
-            
-        }) { (error) in
-            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
-            return
-        }
-    }
     
-    private func setupNavigationTitle() {
-        let logoView = UIImageView(image: #imageLiteral(resourceName: "text_logo"))
-            logoView.contentMode = .scaleAspectFit
-        /// because this HomeVC belong to a NavigationController, navigationItem property is used to modify the display of UINavigationBar of this VC in parent's navigation bar:
-        self.navigationItem.titleView = logoView
-    }
     
     
     // MARK: -
@@ -125,6 +102,39 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         }
         
         
+    }
+    
+    private func fetchPostsByFollowingUsers() {
+        
+        guard let currentUid = Auth.auth().currentUser?.uid else {
+            return
+        }
+        databaseRef.child("following").child(currentUid).observeSingleEvent(of: .value, with: { [unowned self](snapshot) in
+            
+            guard let followingUserIds = snapshot.value as? [String:Any] else {
+                LogUtils.LogDebug(type: .error, message: "Something wrong")
+                return
+            }
+            for (key, _) in followingUserIds {
+                
+                databaseRef.child("users").child(key).observeSingleEvent(of: .value, with: { [unowned self](snapshot) in
+                    if let userDict = snapshot.value as? [String:Any] {
+                        let user = User(uid: key, dictionary: userDict)
+                        self.fetchPostWithUser(user: user)
+                    } else {
+                        LogUtils.LogDebug(type: .info, message: "This user doesn't existed")
+                    }
+                    }, withCancel: { (error) in
+                        LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                        return
+                })
+                
+            }
+            
+        }) { (error) in
+            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+            return
+        }
     }
     
     private func fetchPostWithUser(user: User) {

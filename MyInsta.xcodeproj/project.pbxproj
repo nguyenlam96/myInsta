@@ -21,6 +21,9 @@
 		054CAD792205A34700709E53 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054CAD782205A34700709E53 /* MainTabBarController.swift */; };
 		054CAD7B2205A44200709E53 /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054CAD7A2205A44200709E53 /* UserProfileVC.swift */; };
 		05AF9C1722212CBA007178CC /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05AF9C1622212CBA007178CC /* CustomImageView.swift */; };
+		05B4193D222832F4007C534E /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B4193C222832F3007C534E /* CameraController.swift */; };
+		05BCF29B22299B010024E098 /* PreviewPhotoContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BCF29A22299B010024E098 /* PreviewPhotoContainerView.swift */; };
+		05BCF29D2229B3130024E098 /* CustomAnimationPresentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BCF29C2229B3130024E098 /* CustomAnimationPresentor.swift */; };
 		05D9B37022057E55000288B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D9B36F22057E55000288B7 /* AppDelegate.swift */; };
 		05D9B37222057E55000288B7 /* RegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D9B37122057E55000288B7 /* RegisterVC.swift */; };
 		05D9B37522057E55000288B7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05D9B37322057E55000288B7 /* Main.storyboard */; };
@@ -51,6 +54,9 @@
 		054CAD782205A34700709E53 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		054CAD7A2205A44200709E53 /* UserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
 		05AF9C1622212CBA007178CC /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
+		05B4193C222832F3007C534E /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		05BCF29A22299B010024E098 /* PreviewPhotoContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPhotoContainerView.swift; sourceTree = "<group>"; };
+		05BCF29C2229B3130024E098 /* CustomAnimationPresentor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnimationPresentor.swift; sourceTree = "<group>"; };
 		05D9B36C22057E55000288B7 /* MyInsta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyInsta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05D9B36F22057E55000288B7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		05D9B37122057E55000288B7 /* RegisterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterVC.swift; sourceTree = "<group>"; };
@@ -123,6 +129,14 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		05B4193B222832A3007C534E /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				05B4193C222832F3007C534E /* CameraController.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
 		05D9B36322057E55000288B7 = {
 			isa = PBXGroup;
 			children = (
@@ -148,6 +162,7 @@
 				0526C26F2209E5450071403F /* Login - Register */,
 				054CAD782205A34700709E53 /* MainTabBarController.swift */,
 				05AF9C1822214315007178CC /* Home */,
+				05B4193B222832A3007C534E /* Camera */,
 				05AF9C1922214D9D007178CC /* UserProfile */,
 				05F5937D2211EB350024FCBE /* PhotoSelector */,
 				05F5937C2211EB300024FCBE /* Search */,
@@ -173,6 +188,8 @@
 			isa = PBXGroup;
 			children = (
 				05AF9C1622212CBA007178CC /* CustomImageView.swift */,
+				05BCF29A22299B010024E098 /* PreviewPhotoContainerView.swift */,
+				05BCF29C2229B3130024E098 /* CustomAnimationPresentor.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -351,6 +368,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0509389B22252C9200B44E70 /* UserSearchCell.swift in Sources */,
+				05B4193D222832F4007C534E /* CameraController.swift in Sources */,
 				05D9B38722057F7C000288B7 /* LogUtils.swift in Sources */,
 				05D9B37222057E55000288B7 /* RegisterVC.swift in Sources */,
 				0547B293220C3D6700FCA3FF /* SharePhotoVC.swift in Sources */,
@@ -361,6 +379,7 @@
 				0546BB66222700D600ADDD4E /* Notification.swift in Sources */,
 				05DB248D2205E21500D046D9 /* UserProfileHeader.swift in Sources */,
 				05AF9C1722212CBA007178CC /* CustomImageView.swift in Sources */,
+				05BCF29D2229B3130024E098 /* CustomAnimationPresentor.swift in Sources */,
 				0526C26E2209E29C0071403F /* LoginVC.swift in Sources */,
 				0526C276220AD5A10071403F /* PhotoSelectorVC.swift in Sources */,
 				05D9B38922057F89000288B7 /* Constraints.swift in Sources */,
@@ -369,6 +388,7 @@
 				050938992225269D00B44E70 /* UserSearchVC.swift in Sources */,
 				05D9B38522057F59000288B7 /* Extensions.swift in Sources */,
 				0526C272220AC7330071403F /* HomeVC.swift in Sources */,
+				05BCF29B22299B010024E098 /* PreviewPhotoContainerView.swift in Sources */,
 				05F593812211ED450024FCBE /* HomePostCell.swift in Sources */,
 				05D9B37022057E55000288B7 /* AppDelegate.swift in Sources */,
 				052BB04E220CB83900F7D7D6 /* UserProfilePhotoCell.swift in Sources */,
