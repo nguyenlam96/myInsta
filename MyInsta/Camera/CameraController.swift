@@ -72,9 +72,6 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
                 self.view.addSubview(containerView)
                 containerView.anchor(top: self.view.topAnchor, left: self.view.leftAnchor, bottom: self.view.bottomAnchor, right: self.view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
                 
-//                let previewPhotoView = UIImageView(image: photo)
-//                self.view.addSubview(previewPhotoView)
-//                previewPhotoView.anchor(top: self.view.topAnchor, left: self.view.leftAnchor, bottom: self.view.bottomAnchor, right: self.view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
             }
             
         } else {
@@ -91,19 +88,24 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
         
         self.setupCaptureSession()
         self.setupButtons()
-        
+        transitioningDelegate = self
     }
-    
     
     deinit {
         print("=== CameraController is deinit")
     }
     
     let customAnimationPresentor = CustomAnimationPresentor()
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+    let customAnimationDismisser = CustomAnimationDismisser()
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
         return customAnimationPresentor
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
+        return customAnimationDismisser
     }
     
     // MARK: -

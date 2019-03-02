@@ -24,6 +24,7 @@
 		05B4193D222832F4007C534E /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B4193C222832F3007C534E /* CameraController.swift */; };
 		05BCF29B22299B010024E098 /* PreviewPhotoContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BCF29A22299B010024E098 /* PreviewPhotoContainerView.swift */; };
 		05BCF29D2229B3130024E098 /* CustomAnimationPresentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BCF29C2229B3130024E098 /* CustomAnimationPresentor.swift */; };
+		05BCF29F222A65850024E098 /* CustomAnimationDismisser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BCF29E222A65850024E098 /* CustomAnimationDismisser.swift */; };
 		05D9B37022057E55000288B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D9B36F22057E55000288B7 /* AppDelegate.swift */; };
 		05D9B37222057E55000288B7 /* RegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D9B37122057E55000288B7 /* RegisterVC.swift */; };
 		05D9B37522057E55000288B7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05D9B37322057E55000288B7 /* Main.storyboard */; };
@@ -57,6 +58,7 @@
 		05B4193C222832F3007C534E /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		05BCF29A22299B010024E098 /* PreviewPhotoContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPhotoContainerView.swift; sourceTree = "<group>"; };
 		05BCF29C2229B3130024E098 /* CustomAnimationPresentor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnimationPresentor.swift; sourceTree = "<group>"; };
+		05BCF29E222A65850024E098 /* CustomAnimationDismisser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnimationDismisser.swift; sourceTree = "<group>"; };
 		05D9B36C22057E55000288B7 /* MyInsta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyInsta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05D9B36F22057E55000288B7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		05D9B37122057E55000288B7 /* RegisterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterVC.swift; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 				05AF9C1622212CBA007178CC /* CustomImageView.swift */,
 				05BCF29A22299B010024E098 /* PreviewPhotoContainerView.swift */,
 				05BCF29C2229B3130024E098 /* CustomAnimationPresentor.swift */,
+				05BCF29E222A65850024E098 /* CustomAnimationDismisser.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 				0526C272220AC7330071403F /* HomeVC.swift in Sources */,
 				05BCF29B22299B010024E098 /* PreviewPhotoContainerView.swift in Sources */,
 				05F593812211ED450024FCBE /* HomePostCell.swift in Sources */,
+				05BCF29F222A65850024E098 /* CustomAnimationDismisser.swift in Sources */,
 				05D9B37022057E55000288B7 /* AppDelegate.swift in Sources */,
 				052BB04E220CB83900F7D7D6 /* UserProfilePhotoCell.swift in Sources */,
 			);
