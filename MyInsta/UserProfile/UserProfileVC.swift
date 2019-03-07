@@ -12,6 +12,7 @@ import Firebase
 class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 
     // MARK: - Properties:
+    var isGridView = true
     var user: User? {
         didSet {
             if user != nil {
@@ -21,6 +22,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         }
     }
     let cellId = "cellId"
+    let homePostCellId = "homePostCellId"
     let headerId = "headerId"
     var posts: [Post] = []
     
@@ -30,6 +32,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         self.collectionView?.backgroundColor = UIColor.white
         self.collectionView.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
         self.collectionView.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
+        self.collectionView.register(HomePostCell.self, forCellWithReuseIdentifier: homePostCellId)
         setupLogoutButton()
         self.fetchUser()
         self.fetchOrderedPosts()
@@ -85,7 +88,9 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         
         
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! UserProfileHeader
+        
         headerView.user = self.user
+        headerView.delegate = self
         return headerView
     }
     
@@ -107,10 +112,18 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
-            cell.post = self.posts[indexPath.item]
+        if isGridView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
+                cell.post = self.posts[indexPath.item]
+            
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: homePostCellId, for: indexPath) as! HomePostCell
+                cell.post = self.posts[indexPath.item]
+            
+            return cell
+        }
         
-        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -120,8 +133,19 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let cellWidth = (self.view.frame.width - 2) / 3
-        return CGSize(width: cellWidth, height: cellWidth)
+        if isGridView { // gridview:
+            
+            let cellWidth = (self.view.frame.width - 2) / 3
+            return CGSize(width: cellWidth, height: cellWidth)
+        } else { // listview:
+            
+            var height: CGFloat = 40 + 8 + 8 // for username + userProfileImage ( 40 is the size of image, 8 padding top and 8 padding bottom )
+            height += view.frame.width
+            height += 50 // for the bottom row of the image
+            height += 60 // for the caption
+            return CGSize(width: view.frame.width, height: height)
+        }
+        
     }
     
     // MARK: - Private Funcs :
@@ -165,22 +189,69 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         let uid = self.user?.uid ?? Auth.auth().currentUser?.uid ?? ""
         databaseRef.child("posts").child(uid).queryOrdered(byChild: "createdTime").observe(DataEventType.childAdded, with: { [unowned self](snapshot) in
             
-            guard let postsDict = snapshot.value as? [String:Any] else {
+            guard let postDict = snapshot.value as? [String:Any] else {
                 Logger.LogDebug(type: .error, message: "Can't cast snapshot.value to String:Any")
                 return
             }
+            
+            let postId = snapshot.key
+            
             guard let user = self.user else { /// Attempted to read an unowned reference but the object was already deallocated2019-02-27 00:04:31.915516+0700 MyInsta[29567:8219404] Fatal error: Attempted to read an unowned reference but the object was already deallocated
                 Logger.LogDebug(type: .error, message: "user doesn't exist")
                 return
             }
-            let post = Post(dictionary: postsDict, by: user)
-            self.posts.insert(post, at: 0)
-            self.collectionView.reloadData()
+            var post = Post(dictionary: postDict, by: user)
+                post.postId = postId
+            self.isPostLiked(postId: postId, completion: { [unowned self](isLiked) in
+                
+                post.isLiked = (isLiked != nil) ? isLiked : false
+                self.posts.insert(post, at: 0)
+                self.collectionView.reloadData()
+            })
+            
+            
         }) { (error) in
             Logger.LogDebug(type: .error, message: error.localizedDescription)
             return
         }
     }
     
+    private func isPostLiked(postId: String, completion: @escaping (Bool?) -> () ) {
+        Logger.LogDebug(type: .info, message: "\(#function) get called")
+        
+        let uid = Auth.auth().currentUser?.uid
+        databaseRef.child("likes").child(postId).child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            guard let value = snapshot.value as? Int else {
+                completion(nil)
+                return
+            }
+            let isLiked = (value == 1)
+            
+            completion(isLiked)
+            
+        }) { (error) in
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
+            return
+        }
+        
+    }
+    
 
+}
+
+extension UserProfileVC: UserProfileHeaderDelegate {
+    
+    func didChooseGridView() {
+        Logger.LogDebug(type: .info, message: "\(#function) get called")
+        self.isGridView = true
+        self.collectionView.reloadData()
+    }
+    
+    func didChooseListView() {
+        Logger.LogDebug(type: .info, message: "\(#function) get called")
+        self.isGridView = false
+        self.collectionView.reloadData()
+    }
+    
 }

@@ -31,7 +31,10 @@ class HomePostCell: UICollectionViewCell {
             self.userProfileImageView.fetchPostImage(with: profileImageUrl)
             
             // liked or not:
-            guard let isLiked = post?.isLiked else { return }
+            guard let isLiked = post?.isLiked else {
+                Logger.LogDebug(type: .error, message: "isLiked is nil")
+                return
+            }
             self.likeButton.setImage(isLiked ? #imageLiteral(resourceName: "like_selected").withRenderingMode(.alwaysOriginal) : #imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal) , for: .normal)
             
             // username label:

@@ -211,8 +211,10 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellId, for: indexPath) as! HomePostCell
+        if indexPath.item < self.posts.count {
             cell.post = self.posts[indexPath.item]
             cell.delegate = self
+        }
         return cell
     }
     

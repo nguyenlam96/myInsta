@@ -9,8 +9,16 @@
 import Firebase
 import UIKit
 
+protocol UserProfileHeaderDelegate {
+    
+    func didChooseGridView()
+    func didChooseListView()
+}
+
 class UserProfileHeader: UICollectionViewCell {
     // MARK: -
+    var isGridView = true
+    var delegate: UserProfileHeaderDelegate?
     var isFollowing: Bool? {
         didSet {
             updateUIOfFollowButton()
@@ -161,18 +169,34 @@ class UserProfileHeader: UICollectionViewCell {
         return button
     }()
     // bottom tool bar:
-    let gridButton: UIButton = {
+    lazy var gridButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.system)
             button.setImage(#imageLiteral(resourceName: "grid"), for: .normal)
+        button.addTarget(self, action: #selector(handleGridButton), for: .touchUpInside)
        return button
     }()
     
-    let listButton: UIButton = {
+    @objc func handleGridButton() {
+        self.isGridView = true
+        self.gridButton.tintColor = UIColor.mainBlue()
+        self.listButton.tintColor = UIColor.whiteGray()
+        delegate?.didChooseGridView()
+    }
+    
+    lazy var listButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.system)
             button.tintColor = UIColor(white: 0, alpha: 0.5)
             button.setImage(#imageLiteral(resourceName: "list"), for: .normal)
+            button.addTarget(self, action: #selector(handleListButton), for: .touchUpInside)
         return button
     }()
+    
+    @objc func handleListButton() {
+        self.isGridView = false
+        self.gridButton.tintColor = UIColor.whiteGray()
+        self.listButton.tintColor = UIColor.mainBlue()
+        delegate?.didChooseListView()
+    }
     
     let bookmarkButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.system)
