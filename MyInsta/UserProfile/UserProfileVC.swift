@@ -13,6 +13,8 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
 
     // MARK: - Properties:
     var isGridView = true
+    var isFinishPaginating = false
+    let numberForPagination: UInt = 4
     var user: User? {
         didSet {
             if user != nil {
@@ -35,7 +37,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         self.collectionView.register(HomePostCell.self, forCellWithReuseIdentifier: homePostCellId)
         setupLogoutButton()
         self.fetchUser()
-        self.fetchOrderedPosts()
+//        self.fetchOrderedPosts()
     }
     
     deinit {
@@ -112,6 +114,10 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
+        if (indexPath.row == self.posts.count - 1 ) && !isFinishPaginating {
+            self.paginatePosts()
+        }
+        
         if isGridView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
                 cell.post = self.posts[indexPath.item]
@@ -170,12 +176,62 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                 self.user = User(uid: uid, dictionary: userInfoDict)
                 self.navigationItem.title = self.user?.username ?? "DefaulName"
                 
+//                self.fetchOrderedPosts()
+                self.paginatePosts()
                 self.collectionView.reloadData()
                 
             }) { (error) in
                 Logger.LogDebug(type: .error, message: error.localizedDescription)
                 return
             }
+    }
+    
+    private func paginatePosts() {
+        Logger.LogDebug(type: .info, message: "\(#function) get called")
+        let uid = Auth.auth().currentUser?.uid
+        
+//        var ref = databaseRef.child("posts").child(uid!).queryOrderedByKey()
+//        let valueForStartAt = (self.posts.last?.postId)!
+        var ref = databaseRef.child("posts").child(uid!).queryOrdered(byChild: "createdTime")
+        if self.posts.count > 0 {
+
+            let value = self.posts.last?.createdTime.timeIntervalSince1970
+            ref = ref.queryEnding(atValue: value)
+        }
+        
+        ref.queryLimited(toLast: numberForPagination).observeSingleEvent(of: .value, with: { [unowned self](snapshot) in
+            
+            guard var allObjects = snapshot.children.allObjects as? [DataSnapshot] else {
+                return
+            }
+            allObjects.reverse()
+            
+            if allObjects.count < self.numberForPagination {
+                self.isFinishPaginating = true
+            }
+            
+            if self.posts.count > 0 && allObjects.count > 0 {
+                allObjects.removeFirst()
+            }
+            
+            guard let user = self.user else { return }
+            allObjects.forEach({ (snapshot) in
+                
+                guard let postDict = snapshot.value as? [String:Any] else {
+                    return
+                }
+                var post = Post(dictionary: postDict, by: user)
+                    post.postId = snapshot.key
+                self.posts.append(post)
+                
+            })
+            self.collectionView.reloadData()
+            
+        }) { (error) in
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
+            return
+        }
+        
     }
     
     private func fetchOrderedPosts() {
