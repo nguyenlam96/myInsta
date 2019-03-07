@@ -31,6 +31,9 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         
     }
     
+    deinit {
+        print("=== HomeVC is deinit")
+    }
     
     // MARK: -
     private func setupNavigationTitle() {
@@ -53,7 +56,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     }
     
     @objc func handleUpdateNewPostNotification() {
-        LogUtils.LogDebug(type: .info, message: "\(#function)")
+        Logger.LogDebug(type: .info, message: "\(#function)")
         self.handleRefresh()
     }
     
@@ -80,7 +83,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private func fetchPostsByCurrentUser() {
         
         guard let uid = Auth.auth().currentUser?.uid else {
-            LogUtils.LogDebug(type: .error, message: "current uid is nil")
+            Logger.LogDebug(type: .error, message: "current uid is nil")
             return
         }
         
@@ -88,7 +91,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
             
             // fetch user:
             guard let userDict = snapshot.value as? [String:Any] else {
-                LogUtils.LogDebug(type: .error, message: "userDict is empty")
+                Logger.LogDebug(type: .error, message: "userDict is empty")
                 return
             }
             let user = User(uid: uid, dictionary: userDict)
@@ -97,7 +100,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
             self.fetchPostWithUser(user: user)
             
         }) { (error) in
-            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
             return
         }
         
@@ -112,7 +115,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         databaseRef.child("following").child(currentUid).observeSingleEvent(of: .value, with: { [unowned self](snapshot) in
             
             guard let followingUserIds = snapshot.value as? [String:Any] else {
-                LogUtils.LogDebug(type: .error, message: "Something wrong")
+                Logger.LogDebug(type: .error, message: "Something wrong")
                 return
             }
             for (key, _) in followingUserIds {
@@ -122,53 +125,79 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
                         let user = User(uid: key, dictionary: userDict)
                         self.fetchPostWithUser(user: user)
                     } else {
-                        LogUtils.LogDebug(type: .info, message: "This user doesn't existed")
+                        Logger.LogDebug(type: .info, message: "This user doesn't existed")
                     }
                     }, withCancel: { (error) in
-                        LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                        Logger.LogDebug(type: .error, message: error.localizedDescription)
                         return
                 })
                 
             }
             
         }) { (error) in
-            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
             return
         }
     }
     
     private func fetchPostWithUser(user: User) {
         // fetch post:
-        let uid = user.uid
-        databaseRef.child("posts").child(uid).observeSingleEvent(of: DataEventType.value, with: { [unowned self](snapshot) in
+        databaseRef.child("posts").child(user.uid).observeSingleEvent(of: DataEventType.value, with: { [unowned self](snapshot) in
             
             /// stop refresh controller after getting value
             self.collectionView.refreshControl?.endRefreshing()
             /// get all posts by currentUser:
             guard let postDicts = snapshot.value as? [String:Any] else {
-                LogUtils.LogDebug(type: .error, message: "Can't cast snapshot.value to String:Any")
                 return
             }
             postDicts.forEach({ [unowned self](key, value) in
                 guard let singlePostDict = value as? [String:Any] else {
-                    LogUtils.LogDebug(type: .error, message: "Can't fetch single post")
+                    Logger.LogDebug(type: .error, message: "Can't fetch single post")
                     return
                 }
-                let post = Post(dictionary: singlePostDict, by: user)
-                self.posts.append(post)
+                var post = Post(dictionary: singlePostDict, by: user)
+                    post.postId = key
+                
+                self.isPostLiked(postId: key, completion: { [unowned self](isLiked) in
+                    
+                    post.isLiked = (isLiked != nil) ? isLiked : false
+                    self.posts.append(post)
+                    self.posts.sort(by: { (post1, post2) -> Bool in
+                        return post1.createdTime.compare(post2.createdTime) == .orderedDescending
+                    })
+                    
+                    self.collectionView.reloadData()
+                })
+                
+                
             }) // end loop
             
-            self.posts.sort(by: { (post1, post2) -> Bool in
-                return post1.createdTime.compare(post2.createdTime) == .orderedDescending
-            })
-            
-            self.collectionView.reloadData()
         }) { (error) in
-            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
             return
         }
     }
     
+    private func isPostLiked(postId: String, completion: @escaping (Bool?) -> () ) {
+        Logger.LogDebug(type: .info, message: "\(#function) get called")
+        
+        let uid = Auth.auth().currentUser?.uid
+        databaseRef.child("likes").child(postId).child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            guard let value = snapshot.value as? Int else {
+                completion(nil)
+                return
+            }
+            let isLiked = (value == 1)
+            
+            completion(isLiked)
+            
+        }) { (error) in
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
+            return
+        }
+       
+    }
     
     // MARK: - CollectionView Datasource :
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -183,7 +212,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellId, for: indexPath) as! HomePostCell
             cell.post = self.posts[indexPath.item]
-        
+            cell.delegate = self
         return cell
     }
     
@@ -194,6 +223,46 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
             height += 50 // for the bottom row of the image
             height += 60 // for the caption
         return CGSize(width: view.frame.width, height: height)
+    }
+    
+}
+
+extension HomeVC: HomePostCellDelegate {
+    
+    func didTapCommentButton(post: Post) {
+        
+        Logger.LogDebug(type: .info, message: "goto comment section of post: \(post.caption)")
+        let commentVC = CommentVC(collectionViewLayout: UICollectionViewFlowLayout() )
+            commentVC.post = post
+        self.navigationController?.pushViewController(commentVC, animated: true)
+    }
+    
+    func didLikePost(cell: UICollectionViewCell) {
+        Logger.LogDebug(type: .info, message: "\(#function) get called")
+        guard let indexPath = self.collectionView.indexPath(for: cell) else {
+            Logger.LogDebug(type: .error, message: "indexPath is nil")
+            return
+        }
+        var post = self.posts[indexPath.row]
+        
+        guard let postId = post.postId else {
+            Logger.LogDebug(type: .error, message: "postId is nil")
+            return
+        }
+        let uid = Auth.auth().currentUser?.uid
+        let values = [uid : post.isLiked! ? 0 : 1]
+        databaseRef.child("likes").child(postId).setValue(values) { (error, ref) in
+            
+            guard error == nil else {
+                return
+            }
+            
+            post.isLiked = !post.isLiked!
+            self.posts[indexPath.row] = post
+            self.collectionView.reloadItems(at: [indexPath])
+        }
+        
+        
     }
     
 }

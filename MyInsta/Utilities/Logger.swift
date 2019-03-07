@@ -21,7 +21,7 @@ enum LogDebugType: Int {
     case error = 2
 }
 
-class LogUtils: NSObject {
+class Logger: NSObject {
     
     static func LogTrace(type: LogTraceType, file: String = #file, function: String = #function, line: Int = #line) {
         var message = ""

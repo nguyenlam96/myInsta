@@ -80,7 +80,7 @@ class PhotoSelectorVC: UICollectionViewController {
                             self.selectedImage = image
                         }
                     } else {
-                        LogUtils.LogDebug(type: .info, message: "Image at count: \(count) is nil")
+                        Logger.LogDebug(type: .info, message: "Image at count: \(count) is nil")
                     }
                     
                     if count == self.images.count - 1 {

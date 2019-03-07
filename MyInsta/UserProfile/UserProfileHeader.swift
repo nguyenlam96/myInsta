@@ -21,10 +21,10 @@ class UserProfileHeader: UICollectionViewCell {
         didSet {
             // ensure user is not nil
             guard let user = user else {
-                LogUtils.LogDebug(type: .error, message: "user is nil")
+                Logger.LogDebug(type: .error, message: "user is nil")
                 return
             }
-            LogUtils.LogDebug(type: .info, message: "Didset user: \(user.username)")
+            Logger.LogDebug(type: .info, message: "Didset user: \(user.username)")
             // check if currentUser OR searchedUser:
             let currentUid = Auth.auth().currentUser?.uid
             if user.uid != currentUid { // not current user
@@ -44,7 +44,7 @@ class UserProfileHeader: UICollectionViewCell {
                 }
                 
             }) { (error) in
-                LogUtils.LogDebug(type: .error, message: "")
+                Logger.LogDebug(type: .error, message: "")
             }
             // load image:
             self.loadProfileImage()
@@ -260,27 +260,27 @@ class UserProfileHeader: UICollectionViewCell {
     private func loadProfileImage() {
         
         guard let urlString = self.user?.profileImageStringUrl else {
-            LogUtils.LogDebug(type: .error, message: "urlString is nil")
+            Logger.LogDebug(type: .error, message: "urlString is nil")
             return
         }
         guard let profileImageUrl = URL(string: urlString) else {
-            LogUtils.LogDebug(type: .error, message: "url is not valid")
+            Logger.LogDebug(type: .error, message: "url is not valid")
             return
         }
 
         URLSession.shared.dataTask(with: profileImageUrl ) { [unowned self](data, response, error) in
             
             guard error == nil else {
-                LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+                Logger.LogDebug(type: .error, message: error!.localizedDescription)
                 return
             }
             // check response value == 200 HTTP
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode != 200 {
-                    LogUtils.LogDebug(type: .error, message: "Status code: \(httpResponse.statusCode)")
+                    Logger.LogDebug(type: .error, message: "Status code: \(httpResponse.statusCode)")
                 }
             } else {
-                LogUtils.LogDebug(type: .error, message: "response is nil")
+                Logger.LogDebug(type: .error, message: "response is nil")
             }
             
             if profileImageUrl.absoluteString != self.user?.profileImageStringUrl {
@@ -289,7 +289,7 @@ class UserProfileHeader: UICollectionViewCell {
             
             // check data:
             guard let data = data else {
-                LogUtils.LogDebug(type: .error, message: "data is nil")
+                Logger.LogDebug(type: .error, message: "data is nil")
                 return
             }
             
@@ -303,19 +303,19 @@ class UserProfileHeader: UICollectionViewCell {
     }
     
     @objc private func handleEditButtonPressed() {
-        LogUtils.LogDebug(type: .info, message: "\(#function)")
+        Logger.LogDebug(type: .info, message: "\(#function)")
     }
     
     @objc private func handleFollowButtonPressed() {
         
-        LogUtils.LogDebug(type: .info, message: "\(#function)")
+        Logger.LogDebug(type: .info, message: "\(#function)")
         
         guard let currentLoggedUserId = Auth.auth().currentUser?.uid else {
-            LogUtils.LogDebug(type: .info, message: "currentUid is nil")
+            Logger.LogDebug(type: .info, message: "currentUid is nil")
             return
         }
         guard let uid = self.user?.uid else {
-            LogUtils.LogDebug(type: .info, message: "searchedUser uid is nil")
+            Logger.LogDebug(type: .info, message: "searchedUser uid is nil")
             return
         }
         
@@ -326,11 +326,11 @@ class UserProfileHeader: UICollectionViewCell {
             databaseRef.child("following").child(currentLoggedUserId).updateChildValues(value) { [unowned self](error, ref) in
                 
                 if let error = error {
-                    LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                    Logger.LogDebug(type: .error, message: error.localizedDescription)
                     return
                 }
                 self.isFollowing = true
-                LogUtils.LogDebug(type: .info, message: "Successfully follow the user: \(String(describing: self.user?.username))" )
+                Logger.LogDebug(type: .info, message: "Successfully follow the user: \(String(describing: self.user?.username))" )
                 
                 
             }
@@ -338,11 +338,11 @@ class UserProfileHeader: UICollectionViewCell {
             // delete follow
             databaseRef.child("following").child(currentLoggedUserId).child((self.user?.uid)!).removeValue { [unowned self](error, ref) in
                 if let error = error {
-                    LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                    Logger.LogDebug(type: .error, message: error.localizedDescription)
                     return
                 }
                 self.isFollowing = false
-                LogUtils.LogDebug(type: .info, message: "Successfully unfollow the user: \(String(describing: self.user?.username))")
+                Logger.LogDebug(type: .info, message: "Successfully unfollow the user: \(String(describing: self.user?.username))")
             }
         }
         

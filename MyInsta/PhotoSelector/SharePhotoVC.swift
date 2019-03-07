@@ -78,20 +78,20 @@ class SharePhotoVC: UIViewController {
         
         // get the text
         guard let caption = self.textView.text else {
-            LogUtils.LogDebug(type: .warning, message: "Caption is nil")
+            Logger.LogDebug(type: .warning, message: "Caption is nil")
             return
         }
         guard caption.count > 0 else {
-            LogUtils.LogDebug(type: .error, message: "Caption is empty")
+            Logger.LogDebug(type: .error, message: "Caption is empty")
             return
         }
         // get the image:
         guard let image = selectedImage else {
-            LogUtils.LogDebug(type: .error, message: "selectedImage is nil")
+            Logger.LogDebug(type: .error, message: "selectedImage is nil")
             return
         }
         guard let imageData = image.jpegData(compressionQuality: 0.5) else {
-            LogUtils.LogDebug(type: .error, message: "imageData is nil")
+            Logger.LogDebug(type: .error, message: "imageData is nil")
             return
         }
         
@@ -103,10 +103,10 @@ class SharePhotoVC: UIViewController {
             
             guard error == nil else {
                 self.navigationItem.rightBarButtonItem?.isEnabled = true
-                LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+                Logger.LogDebug(type: .error, message: error!.localizedDescription)
                 return
             }
-            LogUtils.LogDebug(type: .info, message: "Upload image successfully")
+            Logger.LogDebug(type: .info, message: "Upload image successfully")
             
             // get postImageUrl:
             var postImageUrl = ""
@@ -114,11 +114,11 @@ class SharePhotoVC: UIViewController {
                 
                 guard error == nil else {
                     self.navigationItem.rightBarButtonItem?.isEnabled = true
-                    LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+                    Logger.LogDebug(type: .error, message: error!.localizedDescription)
                     return
                 }
                 guard let url = url else {
-                    LogUtils.LogDebug(type: .error, message: "postImageUrl is nil")
+                    Logger.LogDebug(type: .error, message: "postImageUrl is nil")
                     return
                 }
                 
@@ -126,7 +126,7 @@ class SharePhotoVC: UIViewController {
                 
                 // save to db:
                 guard let uid = Auth.auth().currentUser?.uid else {
-                    LogUtils.LogDebug(type: .error, message: "uid is nil")
+                    Logger.LogDebug(type: .error, message: "uid is nil")
                     return
                 }
                 let userPostRef = databaseRef.child("posts").child(uid)
@@ -144,10 +144,10 @@ class SharePhotoVC: UIViewController {
                     
                     guard error == nil else {
                         self.navigationItem.rightBarButtonItem?.isEnabled = true
-                        LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+                        Logger.LogDebug(type: .error, message: error!.localizedDescription)
                         return
                     }
-                    LogUtils.LogDebug(type: .info, message: "Save to DB successfully")
+                    Logger.LogDebug(type: .info, message: "Save to DB successfully")
                     self.dismiss(animated: true, completion: nil)
                     // post to homeVC know that new post were posted
                     NotificationCenter.default.post(name: CustomNotification.UpdateNewPost, object: nil)

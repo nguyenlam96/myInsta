@@ -13,7 +13,7 @@ class UserSearchCell: UICollectionViewCell {
     var user: User? {
         didSet {
             guard let user = self.user else {
-                LogUtils.LogDebug(type: .error, message: "This User is nil")
+                Logger.LogDebug(type: .error, message: "This User is nil")
                 return
             }
             self.bindData(with: user)

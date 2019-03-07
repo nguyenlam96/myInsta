@@ -59,7 +59,7 @@ class UserSearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayo
             
             
             guard let dictionaries = snapshot.value as? [String:Any] else {
-                LogUtils.LogDebug(type: .warning, message: "Can't cast snapshot value to dictionaries")
+                Logger.LogDebug(type: .warning, message: "Can't cast snapshot value to dictionaries")
                 return
             }
             let currentUid = Auth.auth().currentUser?.uid
@@ -71,7 +71,7 @@ class UserSearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayo
                     let user = User(uid: key, dictionary: userDict)
                     self.fetchedUsers.append(user)
                 } else {
-                    LogUtils.LogDebug(type: .warning, message: "this value can't cast to userDict")
+                    Logger.LogDebug(type: .warning, message: "this value can't cast to userDict")
                 }
             }
             // ordered the result:
@@ -84,7 +84,7 @@ class UserSearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayo
             
             
         }) { (error) in
-            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
             return
         }
     }

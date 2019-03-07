@@ -15,7 +15,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     var user: User? {
         didSet {
             if user != nil {
-                LogUtils.LogDebug(type: .info, message: (user?.username)!)
+                Logger.LogDebug(type: .info, message: (user?.username)!)
             }
             
         }
@@ -62,12 +62,12 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
             
             do {
                 try Auth.auth().signOut()
-                LogUtils.LogDebug(type: .info, message: "Do Logout")
+                Logger.LogDebug(type: .info, message: "Do Logout")
                 let loginVC = LoginVC()
                 let navVC = UINavigationController(rootViewController: loginVC)
                 self.present(navVC, animated: true, completion: nil)
             } catch let error {
-                LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                Logger.LogDebug(type: .error, message: error.localizedDescription)
                 return
             }
         }
@@ -129,9 +129,9 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     private func fetchUser() {
         
         if let _ = self.user?.uid {
-            LogUtils.LogDebug(type: .info, message: "search uid")
+            Logger.LogDebug(type: .info, message: "search uid")
         } else if let _ = Auth.auth().currentUser?.uid {
-            LogUtils.LogDebug(type: .info, message: "current uid")
+            Logger.LogDebug(type: .info, message: "current uid")
         }
         
             let uid = self.user?.uid ?? Auth.auth().currentUser?.uid ?? ""
@@ -139,7 +139,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
             databaseRef.child("users").child(uid).observeSingleEvent(of: DataEventType.value, with: { [unowned self](snapshot) in
                 
                 guard let userInfoDict = snapshot.value as? [String:Any] else {
-                    LogUtils.LogDebug(type: .error, message: "Can't parse snapshot.value ")
+                    Logger.LogDebug(type: .error, message: "Can't parse snapshot.value ")
                     return
                 }
                 
@@ -149,7 +149,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                 self.collectionView.reloadData()
                 
             }) { (error) in
-                LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                Logger.LogDebug(type: .error, message: error.localizedDescription)
                 return
             }
     }
@@ -157,27 +157,27 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     private func fetchOrderedPosts() {
         
         if let _ = self.user?.uid {
-            LogUtils.LogDebug(type: .info, message: "search uid")
+            Logger.LogDebug(type: .info, message: "search uid")
         } else if let _ = Auth.auth().currentUser?.uid {
-            LogUtils.LogDebug(type: .info, message: "current uid")
+            Logger.LogDebug(type: .info, message: "current uid")
         }
         
         let uid = self.user?.uid ?? Auth.auth().currentUser?.uid ?? ""
         databaseRef.child("posts").child(uid).queryOrdered(byChild: "createdTime").observe(DataEventType.childAdded, with: { [unowned self](snapshot) in
             
             guard let postsDict = snapshot.value as? [String:Any] else {
-                LogUtils.LogDebug(type: .error, message: "Can't cast snapshot.value to String:Any")
+                Logger.LogDebug(type: .error, message: "Can't cast snapshot.value to String:Any")
                 return
             }
             guard let user = self.user else { /// Attempted to read an unowned reference but the object was already deallocated2019-02-27 00:04:31.915516+0700 MyInsta[29567:8219404] Fatal error: Attempted to read an unowned reference but the object was already deallocated
-                LogUtils.LogDebug(type: .error, message: "user doesn't exist")
+                Logger.LogDebug(type: .error, message: "user doesn't exist")
                 return
             }
             let post = Post(dictionary: postsDict, by: user)
             self.posts.insert(post, at: 0)
             self.collectionView.reloadData()
         }) { (error) in
-            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
             return
         }
     }

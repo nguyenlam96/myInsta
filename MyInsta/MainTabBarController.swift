@@ -66,7 +66,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         self.tabBar.tintColor = .black
         self.viewControllers = [homeNavController, searchNavController, plusNavController, likeNavController, userProfileNavController]
         guard let items = tabBar.items else {
-            LogUtils.LogDebug(type: .error, message: "Tabbar has no item")
+            Logger.LogDebug(type: .error, message: "Tabbar has no item")
             return
         }
         for item in items {

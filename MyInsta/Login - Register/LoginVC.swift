@@ -130,16 +130,16 @@ class LoginVC: UIViewController {
         
         Auth.auth().signIn(withEmail: email, password: password) { [unowned self](result, error) in
             guard error == nil else {
-                LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+                Logger.LogDebug(type: .error, message: error!.localizedDescription)
                 return
             }
             
             guard let mainTabBarVC = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else {
-                LogUtils.LogDebug(type: .error, message: "Fail to get mainTabBarVC")
+                Logger.LogDebug(type: .error, message: "Fail to get mainTabBarVC")
                 return
             }
             mainTabBarVC.setupVC()
-            LogUtils.LogDebug(type: .info, message: "Login success")
+            Logger.LogDebug(type: .info, message: "Login success")
             self.dismiss(animated: true, completion: nil)
         }
         

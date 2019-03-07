@@ -10,11 +10,13 @@ import UIKit
 
 struct Post {
     
+    var postId: String?
     let user: User
     let caption: String
     let imageUrl: String
     let imageSize: [String:CGFloat]
     let createdTime: Date
+    var isLiked: Bool?
     
     init(dictionary: [String:Any], by user: User) {
         self.user = user

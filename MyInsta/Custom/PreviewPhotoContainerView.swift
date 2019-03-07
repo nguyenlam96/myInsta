@@ -37,9 +37,9 @@ class PreviewPhotoContainerView: UIView {
         return button
     }()
     @objc func handleSaveButtonTapped() {
-        LogUtils.LogDebug(type: .info, message: "\(#function)")
+        Logger.LogDebug(type: .info, message: "\(#function)")
         guard let image = self.previewPhotoView.image else {
-            LogUtils.LogDebug(type: .error, message: "image is empty")
+            Logger.LogDebug(type: .error, message: "image is empty")
             return
         }
         // save photo to library (async in background)
@@ -47,7 +47,7 @@ class PreviewPhotoContainerView: UIView {
             PHAssetChangeRequest.creationRequestForAsset(from: image)
         }) { [unowned self](success, error) in
             if let error = error {
-                LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+                Logger.LogDebug(type: .error, message: error.localizedDescription)
                 return
             }
             // present popup after save success:
@@ -80,7 +80,7 @@ class PreviewPhotoContainerView: UIView {
 
                 
             }
-            LogUtils.LogDebug(type: .info, message: "Success save photo")
+            Logger.LogDebug(type: .info, message: "Success save photo")
         }
         
         

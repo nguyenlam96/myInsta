@@ -151,18 +151,18 @@ class RegisterVC: UIViewController {
         // create user with email and password
         Auth.auth().createUser(withEmail: email, password: password) { [unowned self](result, error) in
             guard error == nil else {
-                LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+                Logger.LogDebug(type: .error, message: error!.localizedDescription)
                 return
             }
-            LogUtils.LogDebug(type: .info, message: "Create user success with uid: \(result!.user.uid)")
+            Logger.LogDebug(type: .info, message: "Create user success with uid: \(result!.user.uid)")
             
             // create profileImageData:
             guard let profileImage = self.plusPhotoButton.imageView?.image else {
-                LogUtils.LogDebug(type: .warning, message: "profileImage is nil")
+                Logger.LogDebug(type: .warning, message: "profileImage is nil")
                 return
             }
             guard let profileImageData = profileImage.jpegData(compressionQuality: 0.5) else {
-                LogUtils.LogDebug(type: .warning, message: "profileImageData is nil")
+                Logger.LogDebug(type: .warning, message: "profileImageData is nil")
                 return
             }
             // upload profileImageData:
@@ -170,20 +170,20 @@ class RegisterVC: UIViewController {
             storageRef.child("profile_images").child(uuidString).putData(profileImageData, metadata: nil, completion: { (metadata, error) in
                 
                 guard error == nil else {
-                    LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+                    Logger.LogDebug(type: .error, message: error!.localizedDescription)
                     return
                 }
-                LogUtils.LogDebug(type: .info, message: "upload profileImage success")
+                Logger.LogDebug(type: .info, message: "upload profileImage success")
                 
                 // upload user's info data:
                 var profileImageUrl = ""
                 storageRef.child("profile_images").child(uuidString).downloadURL(completion: { (url, error) in
                     guard error == nil else {
-                        LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+                        Logger.LogDebug(type: .error, message: error!.localizedDescription)
                         return
                     }
                     guard let url = url else {
-                        LogUtils.LogDebug(type: .error, message: "Url is nil")
+                        Logger.LogDebug(type: .error, message: "Url is nil")
                         return
                     }
                     profileImageUrl = url.absoluteString
@@ -194,18 +194,18 @@ class RegisterVC: UIViewController {
                     let uid = result?.user.uid
                     databaseRef.child("users").child(uid!).updateChildValues(userInfoDict, withCompletionBlock: { (error, ref) in
                         guard error == nil else {
-                            LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+                            Logger.LogDebug(type: .error, message: error!.localizedDescription)
                             return
                         }
-                        LogUtils.LogDebug(type: .info, message: "Upload user's info success")
+                        Logger.LogDebug(type: .info, message: "Upload user's info success")
                         
                         // go to the app:
                         guard let mainTabBarVC = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else {
-                            LogUtils.LogDebug(type: .error, message: "Fail to get mainTabBarVC")
+                            Logger.LogDebug(type: .error, message: "Fail to get mainTabBarVC")
                             return
                         }
                         mainTabBarVC.setupVC()
-                        LogUtils.LogDebug(type: .info, message: "Login success")
+                        Logger.LogDebug(type: .info, message: "Login success")
                         self.dismiss(animated: true, completion: nil)
                     })
                     

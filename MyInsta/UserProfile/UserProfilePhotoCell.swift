@@ -14,7 +14,7 @@ class UserProfilePhotoCell: UICollectionViewCell {
         didSet {
             // load image task:
             guard let imageUrl = post?.imageUrl else {
-                LogUtils.LogDebug(type: .error, message: "imageUrl is nil")
+                Logger.LogDebug(type: .error, message: "imageUrl is nil")
                 return
             }
             self.photoImageView.fetchPostImage(with: imageUrl)

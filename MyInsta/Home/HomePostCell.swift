@@ -8,29 +8,42 @@
 
 import UIKit
 
+protocol HomePostCellDelegate {
+    
+    func didTapCommentButton(post: Post)
+    func didLikePost(cell: UICollectionViewCell)
+}
+
 class HomePostCell: UICollectionViewCell {
     
     // MARK: - Properties:
+    
+    var delegate: HomePostCellDelegate?
+    
     var post: Post? {
         didSet {
-
+            Logger.LogDebug(type: .info, message: "didSet post")
             // user profile image:
             guard let profileImageUrl = post?.user.profileImageStringUrl else {
-                LogUtils.LogDebug(type: .error, message: "profileImageUrl is nil")
+                Logger.LogDebug(type: .error, message: "profileImageUrl is nil")
                 return
             }
             self.userProfileImageView.fetchPostImage(with: profileImageUrl)
             
+            // liked or not:
+            guard let isLiked = post?.isLiked else { return }
+            self.likeButton.setImage(isLiked ? #imageLiteral(resourceName: "like_selected").withRenderingMode(.alwaysOriginal) : #imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal) , for: .normal)
+            
             // username label:
             guard let username = post?.user.username else {
-                LogUtils.LogDebug(type: .error, message: "username is nil")
+                Logger.LogDebug(type: .error, message: "username is nil")
                 return
             }
             self.usernameLabel.text = username
             
             // post image:
             guard let imageUrl = post?.imageUrl else {
-                LogUtils.LogDebug(type: .error, message: "imageUrl is nil")
+                Logger.LogDebug(type: .error, message: "imageUrl is nil")
                 return
             }
             self.photoImageView.fetchPostImage(with: imageUrl)
@@ -42,7 +55,7 @@ class HomePostCell: UICollectionViewCell {
     
     fileprivate func setupAttributedCaption() {
         guard let post = self.post else {
-            LogUtils.LogDebug(type: .error, message: "post is nil")
+            Logger.LogDebug(type: .error, message: "post is nil")
             return
         }
         let attributedText = NSMutableAttributedString(string: post.user.username + " ", attributes: [.font : UIFont.boldSystemFont(ofSize: 14)] )
@@ -85,19 +98,32 @@ class HomePostCell: UICollectionViewCell {
         return button
     }()
 
-    let likeButton: UIButton = {
+    lazy var likeButton: UIButton = {
         let button = UIButton()
             button.setImage(#imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal), for: .normal)
-        
+            button.addTarget(self, action: #selector(handleLikeButton), for: .touchUpInside)
         return button
     }()
     
-    let commentButton: UIButton = {
-        let button = UIButton()
-        button.setImage(#imageLiteral(resourceName: "comment").withRenderingMode(.alwaysOriginal), for: .normal)
+    @objc func handleLikeButton() {
         
+        delegate?.didLikePost(cell: self)
+    }
+    
+    lazy var commentButton: UIButton = {
+        let button = UIButton()
+            button.setImage(#imageLiteral(resourceName: "comment").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handleCommentButtonTapped), for: .touchUpInside)
         return button
     }()
+    
+    @objc func handleCommentButtonTapped() {
+        guard let post = self.post else {
+            Logger.LogDebug(type: .error, message: "Current Post is empty")
+            return
+        }
+        delegate?.didTapCommentButton(post: post)
+    }
     
     let sendMessageButton: UIButton = {
         let button = UIButton()

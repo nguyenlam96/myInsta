@@ -20,12 +20,12 @@ class CustomAnimationDismisser: NSObject, UIViewControllerAnimatedTransitioning 
         let container = transitionContext.containerView
         // fromView now is CameraView
         guard let fromView = transitionContext.view(forKey: .from) else {
-            LogUtils.LogDebug(type: .error, message: "fromView is nil")
+            Logger.LogDebug(type: .error, message: "fromView is nil")
             return
         }
         // toView now is HomeVC
         guard let toView = transitionContext.view(forKey: .to) else {
-            LogUtils.LogDebug(type: .error, message: "toView is nil")
+            Logger.LogDebug(type: .error, message: "toView is nil")
             return
         }
         container.addSubview(toView)

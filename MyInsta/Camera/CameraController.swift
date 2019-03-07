@@ -18,8 +18,13 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
     
     // MARK: -
     let output = AVCapturePhotoOutput()
-    
-    // MARK: -
+    let capturePhotoButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(#imageLiteral(resourceName: "capture_photo").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handleCapturePhotoButtonPressed), for: .touchUpInside)
+        
+        return button
+    }()
     let dismissButton: UIButton = {
        let button = UIButton(type: .system)
             button.setImage(#imageLiteral(resourceName: "right_arrow_shadow").withRenderingMode(.alwaysOriginal), for: .normal)
@@ -32,25 +37,18 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
         self.dismiss(animated: true, completion: nil)
     }
     
-    let capturePhotoButton: UIButton = {
-       let button = UIButton(type: .system)
-           button.setImage(#imageLiteral(resourceName: "capture_photo").withRenderingMode(.alwaysOriginal), for: .normal)
-        button.addTarget(self, action: #selector(handleCapturePhotoButtonPressed), for: .touchUpInside)
-        
-        return button
-    }()
+    // MARK: Handle Capture Photo
     
     @objc func handleCapturePhotoButtonPressed() {
         
         let settingsFormat = [ AVVideoCodecKey: AVVideoCodecType.jpeg ]
         let settings = AVCapturePhotoSettings(format: settingsFormat)
         guard let previewPixelFormatType = settings.availablePreviewPhotoPixelFormatTypes.first else {
-            LogUtils.LogDebug(type: .error, message: "previewFormatType is nil")
+            Logger.LogDebug(type: .error, message: "previewFormatType is nil")
             return
         }
         let previewPhotoFormat = [ kCVPixelBufferPixelFormatTypeKey as String: previewPixelFormatType ]
-//                                   kCVPixelBufferWidthKey as String: 160,
-//                                   kCVPixelBufferHeightKey as String: 160]
+
         settings.previewPhotoFormat = previewPhotoFormat
         self.output.capturePhoto(with: settings, delegate: self)
         
@@ -59,7 +57,7 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         
         guard error == nil else {
-            LogUtils.LogDebug(type: .error, message: error!.localizedDescription)
+            Logger.LogDebug(type: .error, message: error!.localizedDescription)
             return
         }
         
@@ -75,9 +73,9 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
             }
             
         } else {
-            LogUtils.LogDebug(type: .warning, message: "Fail to convert pixel buffer")
+            Logger.LogDebug(type: .warning, message: "Fail to convert pixel buffer")
         }
-        LogUtils.LogDebug(type: .info, message: "Finish get the photo")
+        Logger.LogDebug(type: .info, message: "Finish get the photo")
         
         
     }
@@ -94,7 +92,7 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
     deinit {
         print("=== CameraController is deinit")
     }
-    
+    // MARK: Transition Animation
     let customAnimationPresentor = CustomAnimationPresentor()
     let customAnimationDismisser = CustomAnimationDismisser()
     
@@ -133,7 +131,7 @@ class CameraController: UIViewController, AVCapturePhotoCaptureDelegate, UIViewC
                 captureSession.addInput(input)
             }
         } catch {
-            LogUtils.LogDebug(type: .error, message: error.localizedDescription)
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
             return
         }
         // 2. setup output:
