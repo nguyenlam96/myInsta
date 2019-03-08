@@ -32,12 +32,13 @@ class PreviewPhotoContainerView: UIView {
     
     let saveButton: UIButton = {
         let button = UIButton()
-        button.setImage(#imageLiteral(resourceName: "save_shadow").withRenderingMode(.alwaysOriginal), for: .normal)
-        button.addTarget(self, action: #selector(handleSaveButtonTapped), for: .touchUpInside)
+            button.setImage(#imageLiteral(resourceName: "save_shadow").withRenderingMode(.alwaysOriginal), for: .normal)
+            button.addTarget(self, action: #selector(handleSaveButtonTapped), for: .touchUpInside)
         return button
     }()
     @objc func handleSaveButtonTapped() {
         Logger.LogDebug(type: .info, message: "\(#function)")
+        
         guard let image = self.previewPhotoView.image else {
             Logger.LogDebug(type: .error, message: "image is empty")
             return

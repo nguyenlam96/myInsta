@@ -44,7 +44,6 @@ class UserSearchCell: UICollectionViewCell {
         self.setupUsernameLabel()
         self.setupSeperatorLine()
         
-        
     }
     
     required init?(coder aDecoder: NSCoder) {

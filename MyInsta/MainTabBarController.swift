@@ -40,7 +40,6 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         } else {
             
             self.setupVC()
-            
         }
   
     }

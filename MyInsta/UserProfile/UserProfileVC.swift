@@ -9,8 +9,9 @@
 import UIKit
 import Firebase
 
-class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 
+class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    
     // MARK: - Properties:
     var isGridView = true
     var isFinishPaginating = false
@@ -114,9 +115,9 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if (indexPath.row == self.posts.count - 1 ) && !isFinishPaginating {
-            self.paginatePosts()
-        }
+//        if (indexPath.row == self.posts.count - 1 ) && !isFinishPaginating {
+//            self.paginatePosts()
+//        }
         
         if isGridView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
@@ -176,8 +177,8 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                 self.user = User(uid: uid, dictionary: userInfoDict)
                 self.navigationItem.title = self.user?.username ?? "DefaulName"
                 
-//                self.fetchOrderedPosts()
-                self.paginatePosts()
+                self.fetchOrderedPosts()
+//                self.paginatePosts()
                 self.collectionView.reloadData()
                 
             }) { (error) in
@@ -190,8 +191,6 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         Logger.LogDebug(type: .info, message: "\(#function) get called")
         let uid = Auth.auth().currentUser?.uid
         
-//        var ref = databaseRef.child("posts").child(uid!).queryOrderedByKey()
-//        let valueForStartAt = (self.posts.last?.postId)!
         var ref = databaseRef.child("posts").child(uid!).queryOrdered(byChild: "createdTime")
         if self.posts.count > 0 {
 
@@ -210,7 +209,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                 self.isFinishPaginating = true
             }
             
-            if self.posts.count > 0 && allObjects.count > 0 {
+            if (self.posts.count > 0) && (allObjects.count > 0) {
                 allObjects.removeFirst()
             }
             
@@ -222,10 +221,16 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                 }
                 var post = Post(dictionary: postDict, by: user)
                     post.postId = snapshot.key
-                self.posts.append(post)
                 
-            })
-            self.collectionView.reloadData()
+                Database.isPostLiked(postId: snapshot.key, completion: { (isLiked) in
+                    
+                    post.isLiked = (isLiked != nil ) ? isLiked : false
+                    self.posts.append(post)
+                    self.collectionView.reloadData()
+                })
+                
+            }) // endloop
+            
             
         }) { (error) in
             Logger.LogDebug(type: .error, message: error.localizedDescription)
@@ -233,6 +238,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         }
         
     }
+    
     
     private func fetchOrderedPosts() {
         
@@ -258,7 +264,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
             }
             var post = Post(dictionary: postDict, by: user)
                 post.postId = postId
-            self.isPostLiked(postId: postId, completion: { [unowned self](isLiked) in
+            Database.isPostLiked(postId: postId, completion: { [unowned self](isLiked) in
                 
                 post.isLiked = (isLiked != nil) ? isLiked : false
                 self.posts.insert(post, at: 0)

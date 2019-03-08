@@ -96,6 +96,10 @@ class LoginVC: UIViewController {
         self.dismissKeyboardWhenTappingArround()
     }
     
+    deinit {
+        print("=== LoginVC is deinit")
+    }
+    
     // MARK: - Setup UI :
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

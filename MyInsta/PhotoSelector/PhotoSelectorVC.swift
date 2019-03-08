@@ -34,6 +34,10 @@ class PhotoSelectorVC: UICollectionViewController {
         
     }
     
+    deinit {
+        print("=== PhotoSelectorVC is deinit")
+    }
+    
     // MARK: - Setup When ViewDidLoad:
     override var prefersStatusBarHidden: Bool {
         return true

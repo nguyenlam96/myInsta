@@ -46,6 +46,10 @@ class SharePhotoVC: UIViewController {
         self.setupImageAndTextView()
     }
     
+    deinit {
+        print("=== SharePhotoVC is deinit")
+    }
+    
     // MARK: - Setup When ViewDidLoad:
     override var prefersStatusBarHidden: Bool {
         return true

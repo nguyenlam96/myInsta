@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Firebase
 
 
 // MARK: - UIColor+ :
@@ -93,5 +94,32 @@ extension Date {
         return "\(quotient) \(unit)\(quotient == 1 ? "" : "s") ago"
         
     }
+    
+}
+
+extension Database {
+    
+    static func isPostLiked(postId: String, completion: @escaping (Bool?) -> () ) {
+        Logger.LogDebug(type: .info, message: "\(#function) get called")
+
+        let uid = Auth.auth().currentUser?.uid
+
+        Database.database().reference().child("likes").child(postId).child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let value = snapshot.value as? Int else {
+                completion(nil)
+                return
+            }
+            let isLiked = (value == 1)
+
+            completion(isLiked)
+
+        }) { (error) in
+            Logger.LogDebug(type: .error, message: error.localizedDescription)
+            return
+        }
+
+    }
+    
+
     
 }

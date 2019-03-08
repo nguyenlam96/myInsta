@@ -36,6 +36,10 @@ class UserSearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayo
         self.fetchUser()
     }
     
+    deinit {
+        print("=== UserSearchVC is deinit")
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         

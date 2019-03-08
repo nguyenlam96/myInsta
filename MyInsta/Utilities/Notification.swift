@@ -12,5 +12,5 @@ import Foundation
 struct CustomNotification {
     
     static let UpdateNewPost = NSNotification.Name("UpdateNewPost")
-    
+    static let DidLikeMyOwnPost = NSNotification.Name("DidLikeMyOwnPost")
 }

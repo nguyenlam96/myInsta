@@ -38,7 +38,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     // MARK: -
     private func setupNavigationTitle() {
         let logoView = UIImageView(image: #imageLiteral(resourceName: "text_logo"))
-        logoView.contentMode = .scaleAspectFit
+            logoView.contentMode = .scaleAspectFit
         /// because this HomeVC belong to a NavigationController, navigationItem property is used to modify the display of UINavigationBar of this VC in parent's navigation bar:
         self.navigationItem.titleView = logoView
     }
@@ -158,7 +158,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
                 var post = Post(dictionary: singlePostDict, by: user)
                     post.postId = key
                 
-                self.isPostLiked(postId: key, completion: { [unowned self](isLiked) in
+                Database.isPostLiked(postId: key, completion: { [unowned self](isLiked) in
                     
                     post.isLiked = (isLiked != nil) ? isLiked : false
                     self.posts.append(post)
@@ -233,7 +233,6 @@ extension HomeVC: HomePostCellDelegate {
     
     func didTapCommentButton(post: Post) {
         
-        Logger.LogDebug(type: .info, message: "goto comment section of post: \(post.caption)")
         let commentVC = CommentVC(collectionViewLayout: UICollectionViewFlowLayout() )
             commentVC.post = post
         self.navigationController?.pushViewController(commentVC, animated: true)

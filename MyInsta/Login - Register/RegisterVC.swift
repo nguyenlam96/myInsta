@@ -16,8 +16,9 @@ class RegisterVC: UIViewController {
     // MARK: - Create UI Elements :
     let plusPhotoButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.system)
-        button.setImage(UIImage(named: "plus_photo")?.withRenderingMode(.alwaysOriginal), for: .normal)
-        button.addTarget(self, action: #selector(handlePlusPhoto), for: UIControl.Event.touchUpInside)
+            button.setImage(UIImage(named: "plus_photo")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            button.addTarget(self, action: #selector(handlePlusPhoto), for: UIControl.Event.touchUpInside)
+        
         return button
     }()
     
@@ -110,6 +111,10 @@ class RegisterVC: UIViewController {
         self.setupInputFields()
         self.setupBackToLoginButton()
         self.dismissKeyboardWhenTappingArround()
+    }
+    
+    deinit {
+        print("=== RegisterVC is deinit")
     }
     
     // MARK: - Setup UI  :
