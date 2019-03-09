@@ -46,7 +46,6 @@ class CustomImageView: UIImageView {
             }
             
             if url.absoluteString != self.lastUrlUsedToLoadImage {
-                Logger.LogDebug(type: .warning, message: "Not the current URL we are fetching")
                 return
             }
             

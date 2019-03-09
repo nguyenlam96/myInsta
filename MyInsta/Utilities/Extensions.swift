@@ -100,7 +100,6 @@ extension Date {
 extension Database {
     
     static func isPostLiked(postId: String, completion: @escaping (Bool?) -> () ) {
-        Logger.LogDebug(type: .info, message: "\(#function) get called")
 
         let uid = Auth.auth().currentUser?.uid
 

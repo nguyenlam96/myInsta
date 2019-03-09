@@ -9,7 +9,7 @@
 import Firebase
 import UIKit
 
-protocol UserProfileHeaderDelegate {
+protocol UserProfileHeaderDelegate: class {
     
     func didChooseGridView()
     func didChooseListView()
@@ -18,7 +18,7 @@ protocol UserProfileHeaderDelegate {
 class UserProfileHeader: UICollectionViewCell {
     // MARK: -
     var isGridView = true
-    var delegate: UserProfileHeaderDelegate?
+    weak  var delegate: UserProfileHeaderDelegate?
     var isFollowing: Bool? {
         didSet {
             updateUIOfFollowButton()
@@ -32,7 +32,6 @@ class UserProfileHeader: UICollectionViewCell {
                 Logger.LogDebug(type: .error, message: "user is nil")
                 return
             }
-            Logger.LogDebug(type: .info, message: "Didset user: \(user.username)")
             // check if currentUser OR searchedUser:
             let currentUid = Auth.auth().currentUser?.uid
             if user.uid != currentUid { // not current user

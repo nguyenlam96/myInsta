@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol HomePostCellDelegate {
+protocol HomePostCellDelegate: class {
     
     func didTapCommentButton(post: Post)
     func didLikePost(cell: UICollectionViewCell)
@@ -18,11 +18,10 @@ class HomePostCell: UICollectionViewCell {
     
     // MARK: - Properties:
     
-    var delegate: HomePostCellDelegate?
+    weak var delegate: HomePostCellDelegate?
     
     var post: Post? {
         didSet {
-            Logger.LogDebug(type: .info, message: "didSet post")
             // user profile image:
             guard let profileImageUrl = post?.user.profileImageStringUrl else {
                 Logger.LogDebug(type: .error, message: "profileImageUrl is nil")

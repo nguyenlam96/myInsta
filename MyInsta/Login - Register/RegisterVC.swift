@@ -36,6 +36,7 @@ class RegisterVC: UIViewController {
         textField.backgroundColor = UIColor(white: 0, alpha: 0.03)
         textField.font = UIFont.systemFont(ofSize: 14)
         textField.keyboardType = UIKeyboardType.emailAddress
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing
         textField.addTarget(self, action: #selector(handleTextInputField), for: .editingChanged)
         
         return textField
@@ -49,6 +50,7 @@ class RegisterVC: UIViewController {
         textField.backgroundColor = UIColor(white: 0, alpha: 0.03)
         textField.font = UIFont.systemFont(ofSize: 14)
         textField.keyboardType = UIKeyboardType.alphabet
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing
         textField.addTarget(self, action: #selector(handleTextInputField), for: .editingChanged)
         
         return textField
@@ -63,6 +65,7 @@ class RegisterVC: UIViewController {
         textField.font = UIFont.systemFont(ofSize: 14)
         textField.isSecureTextEntry = true
         textField.keyboardType = UIKeyboardType.alphabet
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing
         textField.addTarget(self, action: #selector(handleTextInputField), for: .editingChanged)
         
         return textField

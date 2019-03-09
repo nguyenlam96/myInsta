@@ -34,7 +34,7 @@ class CommentVC: UICollectionViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        self.inputTextField.becomeFirstResponder()
+        self.commentInputAccessoryView.showInputTextView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -96,49 +96,30 @@ class CommentVC: UICollectionViewController {
     }
     
     
-    var inputTextField: UITextField = {
-       let inputTextField = UITextField()
-           inputTextField.placeholder = "enter comment"
+    lazy var commentInputAccessoryView: CommentInputAccessoryView = {
+
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
+        let commentInputAccessoryView = CommentInputAccessoryView(frame: frame)
+            commentInputAccessoryView.delegate = self
+            commentInputAccessoryView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         
-        return inputTextField
-    }()
-    
-    lazy var containerView: UIView = {
-
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 375, height: 50))
-            containerView.backgroundColor = .white
-
-        let sendButton = UIButton(type: UIButton.ButtonType.system)
-            sendButton.setTitle("Send", for: .normal)
-            sendButton.setTitleColor(#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1), for: UIControl.State.normal)
-            sendButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        sendButton.addTarget(self, action: #selector(handleSendButton), for: UIControl.Event.touchUpInside)
+        return commentInputAccessoryView
         
-        let lineSeperator = UIView()
-            lineSeperator.backgroundColor = UIColor.rgb(r: 230, g: 230, b: 230)
-
-        containerView.addSubview(inputTextField)
-        containerView.addSubview(sendButton)
-        containerView.addSubview(lineSeperator)
-        
-        self.inputTextField.anchor(top: containerView.topAnchor, left: containerView.leftAnchor, bottom: containerView.bottomAnchor, right: sendButton.leftAnchor, paddingTop: 0, paddingLeft: 12, paddingBottom: 0, paddingRight: 12, width: 0, height: 0)
-
-        sendButton.anchor(top: containerView.topAnchor, left: nil, bottom: containerView.bottomAnchor, right: containerView.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 12, width: 50, height: 0)
-
-        lineSeperator.anchor(top: self.inputTextField.topAnchor, left: containerView.leftAnchor, bottom: nil, right: containerView.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
-        
-        return containerView
     }()
     
     override var inputAccessoryView: UIView? {
+        
         get {
-            return containerView
+            return commentInputAccessoryView
         }
     }
     
     
-    // MARK: -
-    @objc func handleSendButton() {
+}
+
+extension CommentVC: CommentInputAccessoryViewDelegate {
+    
+    func didSendComment(with content: String) {
         Logger.LogDebug(type: .info, message: "\(#function)")
         
         guard let post = self.post else {
@@ -147,24 +128,23 @@ class CommentVC: UICollectionViewController {
         guard let uid = Auth.auth().currentUser?.uid else {
             return
         }
-        let values = [ "text": self.inputTextField.text ?? "",
+        let values = [ "text": content,
                        "creationTime" : Date().timeIntervalSince1970,
                        "uid": uid] as [String:Any]
         
-        databaseRef.child("comments").child(post.postId!).childByAutoId().updateChildValues(values) { (error, ref) in
+        databaseRef.child("comments").child(post.postId!).childByAutoId().updateChildValues(values) { [unowned self](error, ref) in
             
             guard error == nil else {
                 Logger.LogDebug(type: .error, message: error!.localizedDescription)
                 return
             }
             Logger.LogDebug(type: .info, message: "Save comment success")
+            self.commentInputAccessoryView.handleInputTextViewAfterSent()
         }
-        self.inputTextField.text = ""
-        self.inputTextField.resignFirstResponder()
-        
     }
-    
 }
+
+
 extension CommentVC: UICollectionViewDelegateFlowLayout {
     
     // MARK: - CollectionView DataSource
@@ -204,3 +184,4 @@ extension CommentVC: UICollectionViewDelegateFlowLayout {
     
     
 }
+

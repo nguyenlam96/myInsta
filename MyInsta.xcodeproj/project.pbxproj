@@ -17,6 +17,7 @@
 		052A8D32222FB04A00065E2C /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052A8D31222FB04A00065E2C /* Comment.swift */; };
 		052BB04C220CB60300F7D7D6 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052BB04B220CB60300F7D7D6 /* Post.swift */; };
 		052BB04E220CB83900F7D7D6 /* UserProfilePhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052BB04D220CB83900F7D7D6 /* UserProfilePhotoCell.swift */; };
+		053AC0412233B6E20056C7BF /* CommentInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053AC0402233B6E20056C7BF /* CommentInputAccessoryView.swift */; };
 		0546BB66222700D600ADDD4E /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0546BB65222700D600ADDD4E /* Notification.swift */; };
 		0547B28F220B3E1F00FCA3FF /* PhotoSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0547B28E220B3E1F00FCA3FF /* PhotoSelectorCell.swift */; };
 		0547B291220B5B2300FCA3FF /* PhotoSelectorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0547B290220B5B2300FCA3FF /* PhotoSelectorHeader.swift */; };
@@ -54,6 +55,7 @@
 		052A8D31222FB04A00065E2C /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		052BB04B220CB60300F7D7D6 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		052BB04D220CB83900F7D7D6 /* UserProfilePhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePhotoCell.swift; sourceTree = "<group>"; };
+		053AC0402233B6E20056C7BF /* CommentInputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputAccessoryView.swift; sourceTree = "<group>"; };
 		0546BB65222700D600ADDD4E /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		0547B28E220B3E1F00FCA3FF /* PhotoSelectorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorCell.swift; sourceTree = "<group>"; };
 		0547B290220B5B2300FCA3FF /* PhotoSelectorHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorHeader.swift; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				05F593802211ED450024FCBE /* HomePostCell.swift */,
 				052A8D2D222F823100065E2C /* CommentVC.swift */,
 				052A8D2F222FAEFA00065E2C /* CommentCell.swift */,
+				053AC0402233B6E20056C7BF /* CommentInputAccessoryView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 				05AF9C1722212CBA007178CC /* CustomImageView.swift in Sources */,
 				05BCF29D2229B3130024E098 /* CustomAnimationPresentor.swift in Sources */,
 				0526C26E2209E29C0071403F /* LoginVC.swift in Sources */,
+				053AC0412233B6E20056C7BF /* CommentInputAccessoryView.swift in Sources */,
 				0526C276220AD5A10071403F /* PhotoSelectorVC.swift in Sources */,
 				05D9B38922057F89000288B7 /* Constraints.swift in Sources */,
 				05DB24902205ED9600D046D9 /* User.swift in Sources */,

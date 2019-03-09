@@ -20,7 +20,8 @@ class SharePhotoVC: UIViewController {
     
     // MARK: - Create UI :
     let imageView: UIImageView = {
-       
+        
+        
         let iv = UIImageView()
             iv.backgroundColor = UIColor.lightGray
             iv.contentMode = .scaleAspectFill

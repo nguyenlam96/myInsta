@@ -38,6 +38,7 @@ class LoginVC: UIViewController {
         textField.font = UIFont.systemFont(ofSize: 14)
         textField.keyboardType = UIKeyboardType.emailAddress
         textField.addTarget(self, action: #selector(handleTextInputField), for: .editingChanged)
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing
         
         return textField
     }()
@@ -51,6 +52,7 @@ class LoginVC: UIViewController {
         textField.isSecureTextEntry = true
         textField.keyboardType = UIKeyboardType.alphabet
         textField.addTarget(self, action: #selector(handleTextInputField), for: .editingChanged)
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing
         
         return textField
     }()
